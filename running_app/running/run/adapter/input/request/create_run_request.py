@@ -13,8 +13,6 @@ class CreateRunRequest(BaseModel):
     title: str
     description: str | None = None
 
-    running_status: RunningStatus
-
     crew_identifier: UUID | None = None
 
     running_user_identifiers: list[UUID]
@@ -25,7 +23,7 @@ class CreateRunRequest(BaseModel):
         return CreateRunCommand(
             title=self.title,
             description=self.description,
-            running_status=self.running_status,
+            running_status=RunningStatus.SCHEDULED,
             user_identifier=request_user_identifier
             if not self.crew_identifier
             else None,
