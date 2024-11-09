@@ -45,10 +45,12 @@ class RunningStateCacheAdapter(SaveCurrentRunOutput, FindCurrentRunOutput):
             current_sequence = result.get("current_sequence")
             current_sequence = int(current_sequence) if current_sequence else 0
 
+            path_identifier = result.get("path_identifier")
+
             return CurrentRun(
                 run_identifier=UUID(result["run_identifier"]),
                 runner_identifier=UUID(result["runner_identifier"]),
-                path_identifier=UUID(result["path_identifier"]),
+                path_identifier=UUID(path_identifier) if path_identifier else None,
                 latitude=float(result["latitude"]),
                 longitude=float(result["longitude"]),
                 current_sequence=current_sequence,
