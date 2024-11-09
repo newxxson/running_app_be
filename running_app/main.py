@@ -12,6 +12,8 @@ from running_app.running.running_state.adapter.input.web.running_state_controlle
     running_state_router,
 )
 from running_app.common.log import logger
+from running_app.crew.adapter.crew_controller import crew_router
+
 from fastapi import FastAPI
 from running_app.common.di import injector
 
@@ -41,3 +43,4 @@ app.include_router(user_router)
 app.include_router(path_router)
 app.include_router(run_router)
 app.include_router(running_state_router)
+app.include_router(crew_router)

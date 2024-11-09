@@ -73,6 +73,12 @@ from running_app.user.application.port.output.get_user_info_output import (
 )
 from running_app.user.application.port.output.save_user_output import SaveUserOutput
 from running_app.user.application.user_service import UserService
+from running_app.crew.application.crew_service import CrewService
+from running_app.crew.adapter.crew_repository import CrewRepository
+from running_app.crew.application.accept_invite_usecase import AcceptInviteUseCase
+from running_app.crew.application.invite_usecase import InviteUseCase
+from running_app.crew.application.get_crew_members_usecase import GetCrewMembersUseCase
+
 from injector import singleton
 
 
@@ -113,5 +119,10 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(CacheManager, to=RedisManager, scope=singleton)
     binder.bind(AsyncSQLAlchemy, to=AsyncSQLAlchemy, scope=singleton)
 
+    # crew
+    binder.bind(InviteUseCase, to=CrewService, scope=singleton)
+    binder.bind(AcceptInviteUseCase, to=CrewService, scope=singleton)
+    binder.bind(GetCrewMembersUseCase, to=CrewService, scope=singleton)
+    binder.bind(CrewRepository, to=CrewRepository, scope=singleton)
 
 injector = Injector(modules=[service_configure])

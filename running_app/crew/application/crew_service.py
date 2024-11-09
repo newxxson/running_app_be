@@ -93,14 +93,12 @@ class CrewService(InviteUseCase, AcceptInviteUseCase, GetCrewMembersUseCase):
         self, command: GetCrewMembersCommand
     ) -> CrewMembersResponse:
         """크루 멤버들을 조회하는 서비스 함수입니다."""
-        async with self.db_context.begin_transaction(read_only=True):
-            crew_identifier = await self.crew_repository.find_by_user_id(command.current_user_id)
 
-        if not crew_identifier:
+        if not command.crew_identifier:
             raise CrewNotFoundException()
         
         async with self.db_context.begin_transaction(read_only=True):
-            members = await self.crew_repository.find_members_by_crew_id(crew_identifier)
+            members = await self.crew_repository.find_members_by_crew_id(command.crew_identifier)
 
         return CrewMembersResponse.from_domain(members)
     
