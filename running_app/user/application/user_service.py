@@ -76,9 +76,10 @@ class UserService(CreateUserUseCase, LoginUserUseCase, QueryUserUseCase):
             kakao_token=kakao_token
         )
 
-        user = await self.find_user_output.find_user_by_kakao_id(
-            kakao_id=user_info.kakao_id
-        )
+        async with self.db_context.begin_transaction(read_only=True):
+            user = await self.find_user_output.find_user_by_kakao_id(
+                kakao_id=user_info.kakao_id
+            )
 
         if not user:
             raise UserNotFoundException()
