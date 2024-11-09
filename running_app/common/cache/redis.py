@@ -17,7 +17,7 @@ class RedisManager(CacheManager):
                 port=redis_property.redis_service_port,
                 db=redis_property.redis_service_db,
             )
-            self._redis = redis.Redis(connection_pool=self._connection_pool)
+            self._redis = redis.Redis(connection_pool=self._connection_pool, ssl=True)
         except Exception:
             logger.critical("Couldn't connect to Redis", exc_info=True)
             raise
@@ -43,10 +43,7 @@ class RedisManager(CacheManager):
         if isinstance(cache_dict, Awaitable):
             raise Exception("Cache is not ready")
 
-        cache_dict = {key.decode(): value.decode() for key, value in cache_dict.items()}
-        if cache_dict and cache_dict.get("valid", "0") == "1":
-            return cache_dict
-        return None
+        return {key.decode(): value.decode() for key, value in cache_dict.items()}
 
     async def delete_cache(self, key: str) -> None:
         """캐시를 삭제합니다."""

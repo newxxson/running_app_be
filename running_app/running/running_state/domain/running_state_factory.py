@@ -17,6 +17,8 @@ class RunningStateFactory:
         longitude: float,
     ) -> RunningState:
         """Create running state."""
+        print("speed", current_run.calculate_speed(latitude, longitude, time))
+
         return RunningState(
             identifier=uuid.uuid4(),
             run_identifier=current_run.run_identifier,

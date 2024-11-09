@@ -1,7 +1,7 @@
 import datetime
 from uuid import UUID
 
-from geoalchemy2 import Geography
+from geoalchemy2 import Geography, WKTElement
 from geoalchemy2.shape import from_shape
 from shapely import Point
 from running_app.common.database.base_model import Base
@@ -49,11 +49,10 @@ class RunningStateEntity(Base):
 
     @classmethod
     def from_domain(cls, running_state: RunningState) -> "RunningStateEntity":
-        location = (
-            from_shape(
-                Point(running_state.longitude, running_state.latitude), srid=4326
-            ),
+        location = WKTElement(
+            f"POINT({running_state.longitude} {running_state.latitude})", srid=4326
         )
+
         return cls(
             identifier=running_state.identifier,
             run_identifier=running_state.run_identifier,

@@ -1,4 +1,5 @@
 from uuid import UUID
+from running_app.common.log import logger
 from fastapi import BackgroundTasks
 from injector import inject
 from running_app.common.database.db_context import DBContext
@@ -125,6 +126,7 @@ class RunningStateService(CreateRunningStatusUseCase, QueryRunningStatusUseCase)
             longitude=command.longitude,
         )
 
+        next_coordinate = None
         if (
             ongoing_run.is_target_coordinate_reached(
                 new_latitude=command.latitude,
@@ -138,24 +140,23 @@ class RunningStateService(CreateRunningStatusUseCase, QueryRunningStatusUseCase)
                 path_identifier=ongoing_run.path_identifier, sequence=next_sequence
             )
 
-            if next_coordinate:
-                # current_run 의 target_coordinate 를 업데이트 합니다.
-                ongoing_run.update_current_run(
-                    new_latitude=command.latitude,
-                    new_longitude=command.longitude,
-                    new_time=command.time,
-                    coordinate=next_coordinate,
-                )
-                background_tasks.add_task(
-                    self.save_current_run_output.save_current_run,
-                    current_run=ongoing_run,
-                )
+        # current_run 의 target_coordinate 를 업데이트 합니다.
+        ongoing_run.update_current_run(
+            new_latitude=command.latitude,
+            new_longitude=command.longitude,
+            new_time=command.time,
+            coordinate=next_coordinate,
+        )
+
+        await self.save_current_run_output.save_current_run(
+            current_run=ongoing_run,
+        )
 
         # 현재 러닝 상태를 저장합니다.
-        background_tasks.add_task(
-            self.save_running_state_output.save_running_state,
-            running_state=new_running_state,
-        )
+        async with self.db_context.begin_transaction(read_only=False):
+            await self.save_running_state_output.save_running_state(
+                running_state=new_running_state,
+            )
 
         return ongoing_run
 
