@@ -12,7 +12,7 @@ class UserFactory:
         """Create user."""
         return User(
             identifier=uuid.uuid4(),
-            kakao_id=user_info.kakao_id,
+            kakao_id=str(user_info.kakao_id),
             nickname=create_user_command.nickname,
             gender=create_user_command.gender,
             profile_image_url=None,
