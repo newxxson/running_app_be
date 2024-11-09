@@ -71,6 +71,7 @@ class PathService(CreatePathUseCase, RegisterCoordinateUseCase, QueryPathUseCase
         coordinates = PathFactory.create_coordinates(
             register_coordinate_command=register_coordinate_command
         )
+        print(coordinates)
         async with self.db_context.begin_transaction(read_only=False):
             await self.save_coordinate_output.save_all_coordinates(
                 coordinates=coordinates

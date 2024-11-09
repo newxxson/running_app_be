@@ -33,7 +33,7 @@ class CoordinateEntity(Base):
     def from_domain(cls, coordinate: Coordinate) -> Self:
         """Convert domain object to entity object."""
         return cls(
-            identifier=coordinate.path_identifier,
+            identifier=coordinate.identifier,
             location=from_shape(
                 Point(coordinate.longitude, coordinate.latitude), srid=4326
             ),
