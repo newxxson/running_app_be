@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
+from typing import Annotated, AsyncIterator
 
 from fastapi.concurrency import run_in_threadpool
+from fastapi.routing import APIRoute
 from running_app.common.cache.cache import CacheManager
 from running_app.common.database.sa_context import AsyncSQLAlchemy
 from running_app.user.adapter.input.web.user_controller import user_router
@@ -14,8 +15,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from running_app.common.log import logger
 from running_app.crew.adapter.crew_controller import crew_router
 
-from fastapi import FastAPI
-from running_app.common.di import injector
+from fastapi import APIRouter, Depends, FastAPI
+from running_app.common.di import injector, on
 
 
 @asynccontextmanager
@@ -56,5 +57,20 @@ app.add_middleware(
     allow_methods=["*"],  # HTTP methods allowed (GET, POST, etc.)
     allow_headers=["*"],  # Headers allowed in requests
 )
-
 app.include_router(crew_router)
+
+
+main_router = APIRouter()
+
+
+@main_router.get("/")
+async def test_redis(
+    cache_manger: Annotated[CacheManager, Depends(on(CacheManager))],
+) -> str:
+    await cache_manger.set_cache("test", {"test": "test"})
+    result = await cache_manger.get_cache("test")
+    logger.info(result)
+    return "test"
+
+
+app.include_router(main_router)
