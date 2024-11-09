@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from running_app.user.application.port.input.command.create_user_command import (
     CreateUserCommand,
 )
-from running_app.user.domain.enum import gender
 from running_app.user.domain.enum.gender import Gender
 
 
@@ -22,7 +21,7 @@ class CreateUserRequest(BaseModel):
         return CreateUserCommand(
             kakao_auth_token=self.kakao_auth_token,
             nickname=self.nickname,
-            gender=Gender(gender),
+            gender=Gender(self.gender),
             profile_image_url=None,
             phone=self.phone,
         )
