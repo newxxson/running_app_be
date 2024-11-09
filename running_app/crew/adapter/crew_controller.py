@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Response, status
 from uuid import UUID
 
 from running_app.common.auth.jwt_token_deserializer import get_current_user
@@ -17,23 +17,26 @@ from running_app.common.di import on
 user_router = APIRouter()
 
 
-@user_router.post("/crews/{crew_identifier}/invites")
+@user_router.post(
+    "/crews/{crew_identifier}/member", 
+    status_code=status.HTTP_200_OK
+)
 async def invite_user(
     invite_usecase: Annotated[InviteUseCase, Depends(on(InviteUseCase))],
     current_user_id: UUID = Depends(get_current_user),
     crew_identifier: UUID = Path(),
     request: InviteUserReq = Depends(),
-) -> CrewInviteResponse:
+) -> Response:
     """크루에 사용자를 초대합니다."""
 
     command = InviteCommand(
-        user_identifier=request.user_identifier,
+        invitee_identifier=request.invitee_identifier,
         crew_identifier=crew_identifier,
         current_user_id=current_user_id,
     )
-    response = await invite_usecase.invite(command)
+    await invite_usecase.invite(command)
 
-    return CrewInviteResponse.from_domain(response)
+    return Response(status_code=status.HTTP_200_OK)
 
 
 

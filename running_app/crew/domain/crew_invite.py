@@ -5,8 +5,8 @@ from uuid import UUID
 class CrewInvite(msgspec.Struct):
     """크루 초대 요청을 나타내는 도메인 오브젝트입니다."""
     
-    request_identifier: UUID
-    user_identifier: UUID # 초대 받는 사람
+    identifier: UUID
+    invitee_identifier: UUID # 초대 받는 사람
     crew_identifier: UUID # 초대 한 크루
     invited_at: datetime
     is_deleted: bool
