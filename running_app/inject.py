@@ -29,6 +29,9 @@ from running_app.path.application.output.save_coordinate_output import (
 )
 from running_app.path.application.output.save_path_output import SavePathOutput
 from running_app.path.application.path_service import PathService
+from running_app.running.run.adapter.output.domain.run_path_adapter import (
+    RunPathAdapter,
+)
 from running_app.running.run.adapter.output.persistence.run_persistence_adapter import (
     RunPersistenceAdapter,
 )
@@ -37,6 +40,9 @@ from running_app.running.run.application.input.usecase.create_run_usecase import
 )
 from running_app.running.run.application.input.usecase.update_run_usecase import (
     UpdateRunUseCase,
+)
+from running_app.running.run.application.output.find_path_output import (
+    RunFindPathOutput,
 )
 from running_app.running.run.application.output.find_run_output import FindRunOutput
 from running_app.running.run.application.output.save_run_output import SaveRunOutput
@@ -130,6 +136,8 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(CrewRepository, to=CrewRepository, scope=singleton)
     binder.bind(CreateCrewUseCase, to=CrewService, scope=singleton)
     binder.bind(QueryCrewUseCase, to=CrewService, scope=singleton)
+
+    binder.bind(RunFindPathOutput, to=RunPathAdapter, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])
