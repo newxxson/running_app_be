@@ -102,3 +102,8 @@ class PathService(CreatePathUseCase, RegisterCoordinateUseCase, QueryPathUseCase
         """경로에 대해서 조회합니다."""
         async with self.db_context.begin_transaction(read_only=True):
             return await self.query_path_output.query_path(cursor=cursor, limit=limit)
+
+    async def query_path_by_id(self, path_identifier: UUID) -> Path | None:
+        """경로에 대해서 조회합니다."""
+        async with self.db_context.begin_transaction(read_only=True):
+            return await self.query_path_output.find_by_id(identifier=path_identifier)

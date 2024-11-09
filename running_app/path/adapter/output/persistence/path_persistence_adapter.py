@@ -65,3 +65,13 @@ class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutp
         paths = result.scalars().all()
 
         return [path.to_domain() for path in paths]
+
+    async def find_by_id(self, identifier: UUID) -> Path | None:
+        """Find by id."""
+        statement = select(PathEntity).where(PathEntity.identifier == identifier)
+
+        result = await self.db_context.session.execute(statement)
+
+        path_entity = result.scalars().first()
+
+        return path_entity.to_domain() if path_entity else None
