@@ -31,6 +31,7 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(CreateUserUseCase, to=UserService, scope=singleton)
     binder.bind(QueryUserUseCase, to=UserService, scope=singleton)
     binder.bind(LoginUserUseCase, to=UserService, scope=singleton)
+    binder.bind(GetUserInfoOutput, to=KakaoApiRequest, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])
