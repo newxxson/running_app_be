@@ -22,6 +22,7 @@ from running_app.path.application.output.save_coordinate_output import (
     SaveCoordinateOutput,
 )
 from running_app.path.application.output.save_path_output import SavePathOutput
+from running_app.path.domain.coordinate import Coordinate
 from running_app.path.domain.exception.path_not_found_exception import (
     PathNotFoundException,
 )
@@ -108,3 +109,19 @@ class PathService(CreatePathUseCase, RegisterCoordinateUseCase, QueryPathUseCase
         """경로에 대해서 조회합니다."""
         async with self.db_context.begin_transaction(read_only=True):
             return await self.query_path_output.find_by_id(identifier=path_identifier)
+
+    async def find_coordinate_by_path_id_and_sequence(
+        self, path_identifier: UUID, sequence: int
+    ) -> Coordinate | None:
+        """Find coordinate by path id and sequence."""
+        async with self.db_context.begin_transaction(read_only=True):
+            return await self.query_path_output.find_coordinate_by_path_id_and_sequence(
+                path_identifier, sequence
+            )
+
+    async def count_coordinates_by_path_id(self, path_identifier: UUID) -> int:
+        """Count coordinates by path id."""
+        async with self.db_context.begin_transaction(read_only=True):
+            return await self.query_path_output.count_coordinates_by_path_id(
+                path_identifier
+            )

@@ -35,7 +35,7 @@ class CurrentRun(msgspec.Struct):
         )
         time_diff = (new_time - self.time).total_seconds()
 
-        return distance / time_diff
+        return distance / time_diff if time_diff > 0 else 0
 
     @staticmethod
     def _calculate_distance(

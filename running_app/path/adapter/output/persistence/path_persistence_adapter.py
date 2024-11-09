@@ -93,3 +93,46 @@ class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutp
         path_entity = result.scalars().first()
 
         return path_entity.to_domain() if path_entity else None
+
+    async def find_coordinate_by_path_id_and_sequence(
+        self, path_identifier: UUID, sequence: int
+    ) -> Coordinate | None:
+        """Find coordinate by path id and sequence."""
+        statement = select(
+            CoordinateEntity.identifier,
+            func.ST_X(cast(CoordinateEntity.location, Geometry)).label("longitude"),
+            func.ST_Y(cast(CoordinateEntity.location, Geometry)).label("latitude"),
+            CoordinateEntity.path_identifier,
+            CoordinateEntity.sequence,
+        ).where(
+            CoordinateEntity.path_identifier == path_identifier,
+            CoordinateEntity.sequence == sequence,
+        )
+
+        result = await self.db_context.session.execute(statement)
+
+        result = result.first()
+
+        return (
+            Coordinate(
+                identifier=result.identifier,
+                latitude=result.latitude,
+                longitude=result.longitude,
+                path_identifier=result.path_identifier,
+                sequence=result.sequence,
+            )
+            if result
+            else None
+        )
+
+    async def count_coordinates_by_path_id(self, path_identifier: UUID) -> int:
+        """Count coordinates by path id."""
+        statement = (
+            select(func.count(CoordinateEntity.identifier))
+            .where(CoordinateEntity.path_identifier == path_identifier)
+            .group_by(CoordinateEntity.path_identifier)
+        )
+
+        result = await self.db_context.session.execute(statement)
+
+        return result.scalar() or 0

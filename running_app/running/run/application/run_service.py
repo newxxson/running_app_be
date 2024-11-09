@@ -1,3 +1,4 @@
+from uuid import UUID
 from injector import inject
 from running_app.common.database.db_context import DBContext
 from running_app.running.run.application.input.command.create_run_command import (
@@ -8,6 +9,9 @@ from running_app.running.run.application.input.command.update_run_command import
 )
 from running_app.running.run.application.input.usecase.create_run_usecase import (
     CreateRunUseCase,
+)
+from running_app.running.run.application.input.usecase.query_run_usecase import (
+    QueryRunUseCase,
 )
 from running_app.running.run.application.input.usecase.update_run_usecase import (
     UpdateRunUseCase,
@@ -81,3 +85,7 @@ class RunService(CreateRunUseCase, UpdateRunUseCase):
             await self.save_run_output.save_run(run)
 
         return run
+
+    async def find_run_by_run_id(self, run_identifier: UUID) -> Run | None:
+        """Find run by run id."""
+        return await self.find_run_output.find_run_by_id(run_identifier)

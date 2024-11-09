@@ -38,6 +38,9 @@ from running_app.running.run.adapter.output.persistence.run_persistence_adapter 
 from running_app.running.run.application.input.usecase.create_run_usecase import (
     CreateRunUseCase,
 )
+from running_app.running.run.application.input.usecase.query_run_usecase import (
+    QueryRunUseCase,
+)
 from running_app.running.run.application.input.usecase.update_run_usecase import (
     UpdateRunUseCase,
 )
@@ -50,6 +53,12 @@ from running_app.running.run.application.run_service import RunService
 from running_app.running.running_state.adapter.output.cache.running_state_cache_adapter import (
     RunningStateCacheAdapter,
 )
+from running_app.running.running_state.adapter.output.domain.running_state_path_adapter import (
+    RunningStatePathAdapter,
+)
+from running_app.running.running_state.adapter.output.domain.running_state_run_adapter import (
+    RunningStateRunAdapter,
+)
 from running_app.running.running_state.adapter.output.persistence.running_state_persistence_adapter import (
     RunningStatePersistenceAdapter,
 )
@@ -61,6 +70,15 @@ from running_app.running.running_state.application.port.input.query_running_stat
 )
 from running_app.running.running_state.application.port.output.find_current_run_output import (
     FindCurrentRunOutput,
+)
+from running_app.running.running_state.application.port.output.find_path_coordinate_output import (
+    RunningStateFindPathCoordinateOutput,
+)
+from running_app.running.running_state.application.port.output.find_run_output import (
+    RunningStateFindRunOutput,
+)
+from running_app.running.running_state.application.port.output.find_running_state_output import (
+    FindRunningStateOutput,
 )
 from running_app.running.running_state.application.port.output.save_current_run_output import (
     SaveCurrentRunOutput,
@@ -143,6 +161,17 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(RunFindPathOutput, to=RunPathAdapter, scope=singleton)
 
     binder.bind(QueryRunningStatusUseCase, to=RunningStateService, scope=singleton)
+
+    binder.bind(RunningStateFindRunOutput, to=RunningStateRunAdapter, scope=singleton)
+    binder.bind(QueryRunUseCase, to=RunService, scope=singleton)
+    binder.bind(
+        RunningStateFindPathCoordinateOutput,
+        to=RunningStatePathAdapter,
+        scope=singleton,
+    )
+    binder.bind(
+        FindRunningStateOutput, to=RunningStatePersistenceAdapter, scope=singleton
+    )
 
 
 injector = Injector(modules=[service_configure])

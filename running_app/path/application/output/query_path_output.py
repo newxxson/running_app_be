@@ -21,3 +21,13 @@ class QueryPathOutput(abc.ABC):
     @abc.abstractmethod
     async def find_by_id(self, identifier: UUID) -> Path | None:
         """Find by id."""
+
+    @abc.abstractmethod
+    async def find_coordinate_by_path_id_and_sequence(
+        self, path_identifier: UUID, sequence: int
+    ) -> Coordinate | None:
+        """Find coordinate by path id and sequence."""
+
+    @abc.abstractmethod
+    async def count_coordinates_by_path_id(self, path_identifier: UUID) -> int:
+        """Count coordinates by path id."""
