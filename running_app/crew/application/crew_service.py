@@ -28,6 +28,11 @@ from running_app.common.database.db_context import DBContext
 
 import uuid
 
+from running_app.user.application.port.output.find_user_output import FindUserOutput
+from running_app.user.domain.exception.user_not_found_exception import (
+    UserNotFoundException,
+)
+
 
 class CrewService(
     InviteUseCase, AcceptInviteUseCase, GetCrewMembersUseCase, CreateCrewUseCase
@@ -35,9 +40,15 @@ class CrewService(
     """Crew service."""
 
     @inject
-    def __init__(self, db_context: DBContext, crew_repository: CrewRepository) -> None:
+    def __init__(
+        self,
+        db_context: DBContext,
+        crew_repository: CrewRepository,
+        find_user_output: FindUserOutput,
+    ) -> None:
         self.db_context = db_context
         self.crew_repository = crew_repository
+        self.find_user_output = find_user_output
 
     async def invite(self, command: InviteCommand) -> CrewInviteResponse:
         """크루에 사용자를 초대하는 서비스 함수입니다."""
@@ -45,22 +56,17 @@ class CrewService(
             crew = await self.crew_repository.find_by_id(
                 command.crew_identifier
             )  # crew_identifier로 크루 조회
+            user = await self.find_user_output.find_user_by_phone(command.invitee_phone)
 
+        if not user:
+            raise UserNotFoundException()
         if not crew:
             raise CrewNotFoundException()
-
-        async with self.db_context.begin_transaction(read_only=True):
-            is_member = await self.crew_repository.find_member_by_user_id_and_crew_id(
-                user_identifier=command.current_user_id, crew_identifier=crew.identifier
-            )
-
-        if not is_member:
-            raise CrewMemberNotFoundException()
 
         crew_member = (
             CrewMember(  # 이거를 그냥 멤버에 바로 넣고 status를 PENDING으로 설정
                 identifier=uuid.uuid4(),
-                user_identifier=command.user_identifier,
+                user_identifier=user.identifier,
                 crew_identifier=crew.identifier,
                 joined_at=datetime.now(),
                 role=CrewRole.MEMBER,
@@ -89,9 +95,7 @@ class CrewService(
         member.member_status = CrewMemberStatus.ACTIVE
 
         async with self.db_context.begin_transaction(read_only=False):
-            await self.crew_repository.update_member(
-                member.crew_identifier, member.user_identifier
-            )  # 크루 멤버 업데이트
+            await self.crew_repository.update_member(member)
 
         return Response(status_code=status.HTTP_200_OK)
 

@@ -38,3 +38,13 @@ class UserPersistenceAdapter(FindUserOutput, SaveUserOutput):
         user_entity = result.scalars().first()
 
         return user_entity.to_domain() if user_entity else None
+
+    async def find_user_by_phone(self, phone: str) -> User | None:
+        """Find user by phone."""
+        statement = select(UserEntity).where(UserEntity.phone == phone)
+
+        result = await self.db_context.session.execute(statement)
+
+        user_entity = result.scalars().first()
+
+        return user_entity.to_domain() if user_entity else None

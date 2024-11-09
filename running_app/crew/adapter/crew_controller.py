@@ -21,16 +21,15 @@ crew_router = APIRouter()
 
 @crew_router.post("/crews/{crew_identifier}/member", status_code=status.HTTP_200_OK)
 async def invite_user(
+    request: InviteUserReq,
     invite_usecase: Annotated[InviteUseCase, Depends(on(InviteUseCase))],
     current_user_id: UUID = Depends(get_current_user),
     crew_identifier: UUID = Path(),
-    request: InviteUserReq = Depends(),
 ) -> Response:
     """크루에 사용자를 초대합니다."""
 
     command = InviteCommand(
-        identifier=uuid.uuid4(),
-        user_identifier=request.invitee_identifier,
+        invitee_phone=request.invitee_phone,
         crew_identifier=crew_identifier,
         current_user_id=current_user_id,
     )
@@ -39,7 +38,7 @@ async def invite_user(
     return Response(status_code=status.HTTP_200_OK)
 
 
-@crew_router.put("/crews/{crew_identifiers}/member/{member_identifier}")
+@crew_router.put("/crews/{crew_identifier}/member/{member_identifier}")
 async def accept_invite(
     member_identifier: UUID,
     crew_identifier: UUID,
@@ -47,12 +46,11 @@ async def accept_invite(
         AcceptInviteUseCase, Depends(on(AcceptInviteUseCase))
     ],
     current_user_id: UUID = Depends(get_current_user),
-) -> CrewInviteResponse:
+) -> Response:
     command = AcceptInviteCommand(
         member_identifier=member_identifier, user_identifier=current_user_id
     )
-    crew_invite = await accept_invite_usecase.accept_invite(command)
-    return CrewInviteResponse.from_domain(crew_invite)
+    return await accept_invite_usecase.accept_invite(command)
 
 
 @crew_router.get("/crews/{crew_identifier}/members")
@@ -76,7 +74,9 @@ async def create_crew(
     create_crew_usecase: Annotated[CreateCrewUseCase, Depends(on(CreateCrewUseCase))],
 ) -> CrewResponse:
     """"""
-    crew = await create_crew_usecase.create_crew(create_crew_request.to_command())
+    crew = await create_crew_usecase.create_crew(
+        crew_name=create_crew_request.crew_name
+    )
     return CrewResponse(
         identifier=crew.identifier,
         crew_name=crew.crew_name,

@@ -11,7 +11,6 @@ class CrewInviteResponse(BaseModel):
     invitee_identifier: UUID
     user_identifier: UUID  # 초대 받는 사람
     crew_identifier: UUID  # 초대 한 크루
-    invited_at: datetime
     is_deleted: bool
     member_status: CrewMemberStatus = CrewMemberStatus.PENDING
 
@@ -21,7 +20,6 @@ class CrewInviteResponse(BaseModel):
             invitee_identifier=crew_invite.user_identifier,
             user_identifier=crew_invite.user_identifier,
             crew_identifier=crew_invite.crew_identifier,
-            invited_at=crew_invite.invited_at,
             is_deleted=crew_invite.is_deleted,
             member_status=crew_invite.member_status,
         )

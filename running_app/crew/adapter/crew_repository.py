@@ -56,11 +56,12 @@ class CrewMemberEntity(Base):
     def of(cls, member: CrewMember) -> Self:
         """Create user entity from user domain object."""
         return cls(
+            identifier=member.identifier,
             user_identifier=member.user_identifier,
             crew_identifier=member.crew_identifier,
             joined_at=member.joined_at,
-            role=member.role,
-            member_status=member.member_status,
+            role=member.role.value,
+            member_status=member.member_status.value,
             is_deleted=member.is_deleted,
         )
 
@@ -71,8 +72,8 @@ class CrewMemberEntity(Base):
             user_identifier=self.user_identifier,
             crew_identifier=self.crew_identifier,
             joined_at=self.joined_at,
-            role=self.role,
-            member_status=self.member_status,
+            role=CrewRole(self.role),
+            member_status=CrewMemberStatus(self.member_status),
             is_deleted=self.is_deleted,
         )
 
@@ -119,14 +120,9 @@ class CrewRepository:
 
         return member_entity.to_domain() if member_entity else None
 
-    async def update_member(self, crew_identifier: UUID, user_identifier: UUID) -> None:
+    async def update_member(self, member: CrewMember) -> None:
         """Update crew member."""
-        stmt = update(CrewMemberEntity).where(
-            CrewMemberEntity.crew_identifier == crew_identifier,
-            CrewMemberEntity.user_identifier == user_identifier,
-        )
-
-        await self.db_context.session.execute(stmt)
+        await self.db_context.session.merge(CrewMemberEntity.of(member))
 
     async def find_member_by_user_id_and_crew_id(
         self, user_identifier: UUID, crew_identifier: UUID

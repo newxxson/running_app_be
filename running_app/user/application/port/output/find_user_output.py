@@ -14,3 +14,7 @@ class FindUserOutput(abc.ABC):
     @abc.abstractmethod
     async def find_user_by_id(self, identifier: UUID) -> User | None:
         """Find user by id."""
+
+    @abc.abstractmethod
+    async def find_user_by_phone(self, phone: str) -> User | None:
+        """Find user by phone."""
