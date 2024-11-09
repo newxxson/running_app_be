@@ -22,6 +22,9 @@ from running_app.path.application.output.save_coordinate_output import (
     SaveCoordinateOutput,
 )
 from running_app.path.application.output.save_path_output import SavePathOutput
+from running_app.path.domain.exception.path_not_found_exception import (
+    PathNotFoundException,
+)
 from running_app.path.domain.model.path_information_model import PathInfoModel
 from running_app.path.domain.path import Path
 from running_app.path.domain.path_factory import PathFactory
@@ -47,6 +50,24 @@ class PathService(CreatePathUseCase, RegisterCoordinateUseCase, QueryPathUseCase
         self, register_coordinate_command: RegisterCoordinateCommand
     ) -> None:
         """Register coordinate."""
+        async with self.db_context.begin_transaction(read_only=False):
+            path = await self.query_path_output.find_by_id(
+                identifier=register_coordinate_command.path_identifier
+            )
+
+        if not path:
+            raise PathNotFoundException(
+                path_identifier=register_coordinate_command.path_identifier
+            )
+
+        if (
+            path.creator_identifier
+            != register_coordinate_command.request_user_identifier
+        ):
+            raise PermissionError(
+                "You don't have register permission to access this path."
+            )
+
         coordinates = PathFactory.create_coordinates(
             register_coordinate_command=register_coordinate_command
         )

@@ -12,3 +12,4 @@ class RegisterCoordinateCommand(msgspec.Struct):
     coordinates: list[CoordinateModel]
 
     path_identifier: UUID
+    request_user_identifier: UUID

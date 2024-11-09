@@ -9,6 +9,13 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:4.0
+    restart: always
+    ports:
+      - "6379:6379"
+
+
   # zookeeper:
   #   image: zookeeper:3.7.0
   #   container_name: local-zookeeper

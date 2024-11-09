@@ -54,11 +54,12 @@ async def register_coordinate(
     register_coordinate_usecase: Annotated[
         RegisterCoordinateUseCase, Depends(on(RegisterCoordinateUseCase))
     ],
+    request_user_identifier: UUID = Depends(get_current_user),
 ) -> None:
     """경로 좌표를 등록합니다."""
     await register_coordinate_usecase.register_coordinate(
         register_coordinate_command=register_coordinate_request.to_command(
-            path_identifier
+            path_identifier, request_user_identifier
         )
     )
 

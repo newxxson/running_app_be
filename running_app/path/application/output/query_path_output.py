@@ -17,3 +17,7 @@ class QueryPathOutput(abc.ABC):
     @abc.abstractmethod
     async def query_path(self, cursor: UUID | None, limit: int) -> list[Path]:
         """Query path."""
+
+    @abc.abstractmethod
+    async def find_by_id(self, identifier: UUID) -> Path | None:
+        """Find by id."""

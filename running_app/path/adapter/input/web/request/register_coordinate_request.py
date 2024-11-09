@@ -1,3 +1,4 @@
+from uuid import UUID
 from pydantic import BaseModel
 
 from running_app.path.application.input.command.register_corrdinate_command import (
@@ -18,8 +19,9 @@ class RegisterCoordinateRequest(BaseModel):
 
     coordinates: list[CoordinateModel]
 
-    def to_command(self, path_identifier):
+    def to_command(self, path_identifier: UUID, request_user_identifier: UUID):
         return RegisterCoordinateCommand(
             coordinates=self.coordinates,
             path_identifier=path_identifier,
+            request_user_identifier=request_user_identifier,
         )
