@@ -3,7 +3,6 @@ from typing import Self
 from uuid import UUID
 from pydantic import BaseModel
 
-from running_app.running.run.domain.enum.running_status import RunningStatus
 from running_app.running.run.domain.run import Run
 
 

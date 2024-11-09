@@ -7,7 +7,6 @@ from running_app.running.running_state.application.port.input.command.snapshot_r
     SnapshotRunningStateCommand,
 )
 from running_app.running.running_state.domain.model.current_run import CurrentRun
-from running_app.running.running_state.domain.running_state import RunningState
 
 
 class CreateRunningStatusUseCase(abc.ABC):

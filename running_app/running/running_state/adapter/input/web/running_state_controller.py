@@ -18,8 +18,9 @@ from running_app.running.running_state.application.port.input.create_running_sta
 running_state_router = APIRouter()
 
 
-@running_state_router.post("/running/running-states")
+@running_state_router.post("/running/{run_identifier}/running-states")
 async def snapshot_running_state(
+    run_identifier: UUID,
     snapshot_running_state_request: SnapshotRunningStateRequest,
     create_running_status_usecase: Annotated[
         CreateRunningStatusUseCase, Depends(on(CreateRunningStatusUseCase))
@@ -30,7 +31,10 @@ async def snapshot_running_state(
     """현재 런닝 상태를 스냅샷하고, 진행 상태를 확인합니다. 만약 자유 런닝이면 진행 상태는 Null입니다."""
     running_state = await create_running_status_usecase.snapshot_running_state(
         background_tasks=background_tasks,
-        command=snapshot_running_state_request.to_command(request_user_identifier),
+        command=snapshot_running_state_request.to_command(
+            request_user_identifier=request_user_identifier,
+            run_identifier=run_identifier,
+        ),
     )
 
     return CurrentRunningStateResponse.from_domain(running_state)

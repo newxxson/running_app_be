@@ -4,7 +4,7 @@ from uuid import UUID
 from geoalchemy2 import Geography
 from running_app.common.database.base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import DateTime, Integer, String, ForeignKey, Uuid
+from sqlalchemy import DateTime, ForeignKey, Uuid
 
 
 class RunningStateEntity(Base):

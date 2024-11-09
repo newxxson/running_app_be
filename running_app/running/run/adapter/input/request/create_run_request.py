@@ -1,5 +1,4 @@
 from uuid import UUID
-from numpy import _no_nep50_warning
 from pydantic import BaseModel
 
 from running_app.running.run.application.input.command.create_run_command import (

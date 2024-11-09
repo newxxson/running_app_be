@@ -1,13 +1,9 @@
-import datetime
 from fastapi import BackgroundTasks
 from injector import inject
 from running_app.common.database.db_context import DBContext
 
 from running_app.running.run.domain.exception.run_not_found_exception import (
     RunNotFoundException,
-)
-from running_app.running.running_state.adapter.input.web.request.snapshot_running_state_request import (
-    SnapshotRunningStateRequest,
 )
 from running_app.running.running_state.application.port.input.command.snapshot_running_status_command import (
     SnapshotRunningStateCommand,
@@ -27,12 +23,7 @@ from running_app.running.running_state.application.port.output.save_current_run_
 from running_app.running.running_state.application.port.output.save_running_state_output import (
     SaveRunningStateOutput,
 )
-from running_app.running.running_state.domain import running_state
-from running_app.running.running_state.domain.exception.user_not_in_run_exception import (
-    UserNotInRunException,
-)
 from running_app.running.running_state.domain.model.current_run import CurrentRun
-from running_app.running.running_state.domain.running_state import RunningState
 from running_app.running.running_state.domain.running_state_factory import (
     RunningStateFactory,
 )

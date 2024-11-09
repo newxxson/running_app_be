@@ -1,9 +1,7 @@
 from typing import Self
-from uuid import UUID
 from pydantic import BaseModel
 
 from running_app.running.running_state.domain.model.current_run import CurrentRun
-from running_app.running.running_state.domain.running_state import RunningState
 
 
 class CurrentRunningStateResponse(BaseModel):

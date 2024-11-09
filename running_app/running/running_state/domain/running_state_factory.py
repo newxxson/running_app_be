@@ -1,8 +1,6 @@
 import datetime
-from uuid import UUID
 import uuid
 
-from running_app.path.domain.coordinate import Coordinate
 
 from running_app.running.running_state.domain.model.current_run import CurrentRun
 from running_app.running.running_state.domain.running_state import RunningState
