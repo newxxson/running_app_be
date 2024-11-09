@@ -119,7 +119,7 @@ class CrewService(
                 command.crew_identifier
             )
 
-        return CrewMembersResponse.from_domain(members)
+        return CrewMembersResponse(members=members)
 
     async def create_crew(self, crew_name: str) -> Crew:
         """크루를 생성하는 서비스 함수입니다."""

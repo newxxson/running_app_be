@@ -1,10 +1,10 @@
-from enum import member
 from pydantic import BaseModel
 from uuid import UUID
 from datetime import datetime
 from running_app.crew.domain.crew_member import CrewMember
 from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.user.domain.enum.gender import Gender
+from running_app.user.domain.user import User
 
 
 class CrewInviteResponse(BaseModel):
@@ -32,14 +32,14 @@ class CrewMemberResponse(BaseModel):
 
     identifier: UUID
     nickname: str
-    gender: Gender
+    gender: str
 
     @classmethod
-    def from_domain(cls, crew_member):
+    def from_domain(cls, crew_member: CrewMember, user: User) -> "CrewMemberResponse":
         return cls(
             identifier=crew_member.identifier,
-            nickname=crew_member.nickname,
-            gender=crew_member.gender,
+            nickname=user.nickname,
+            gender=user.gender.value,
         )
 
 
@@ -49,9 +49,14 @@ class CrewMembersResponse(BaseModel):
     members: list[CrewMemberResponse]
 
     @classmethod
-    def from_domain(cls, crew_members):
+    def from_domain(
+        cls, members: list[tuple[CrewMember, User]]
+    ) -> "CrewMembersResponse":
         return cls(
-            members=[CrewMemberResponse.from_domain(member) for member in crew_members]
+            members=[
+                CrewMemberResponse.from_domain(member[0], member[1])
+                for member in members
+            ]
         )
 
 

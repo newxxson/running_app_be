@@ -3,6 +3,7 @@ from sqlalchemy import String, Uuid, ForeignKey, DateTime, Boolean
 from running_app.common.database.base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
+from running_app.crew.adapter.response import CrewMemberResponse
 from running_app.crew.domain.enum.role import CrewRole
 from injector import inject
 from sqlalchemy import select, update
@@ -12,7 +13,6 @@ from typing import Self
 from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.crew.domain.crew_member import CrewMember
 from running_app.user.adapter.output.persistence.entity.user_entity import UserEntity
-from running_app.crew.domain.crew_member import CrewMemberResponse
 
 
 class CrewEntity(Base):

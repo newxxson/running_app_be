@@ -74,8 +74,7 @@ async def get_crew_members(
     command = GetCrewMembersCommand(
         crew_identifier=crew_identifier,
     )
-    crew_members = await get_crew_members_usecase.get_crew_members(command)
-    return CrewMembersResponse.from_domain(crew_members)
+    return await get_crew_members_usecase.get_crew_members(command)
 
 
 @crew_router.post("/crews")
