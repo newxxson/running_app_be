@@ -1,3 +1,4 @@
+from venv import logger
 import aiohttp
 from running_app.common.property.kakao import kakao_property
 from running_app.user.application.port.output.get_user_info_output import (
@@ -18,6 +19,12 @@ class KakaoApiRequest(GetUserInfoOutput):
                 kakao_property.kakao_api_url, headers=token_header
             ) as response:
                 response_data = await response.json()
+
+                if response.status != 200:
+                    logger.error(
+                        f"Failed to get user info from kakao API: {response_data}"
+                    )
+                    raise Exception("Failed to get user info from kakao API")
 
                 return UserInfo(
                     kakao_id=response_data["id"],
