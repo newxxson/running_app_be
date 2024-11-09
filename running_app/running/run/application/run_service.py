@@ -20,6 +20,7 @@ from running_app.running.run.application.output.find_path_output import (
 )
 from running_app.running.run.application.output.find_run_output import FindRunOutput
 from running_app.running.run.application.output.save_run_output import SaveRunOutput
+from running_app.running.run.domain.enum.running_status import RunningStatus
 from running_app.running.run.domain.exception.run_not_found_exception import (
     RunNotFoundException,
 )
@@ -61,6 +62,7 @@ class RunService(CreateRunUseCase, UpdateRunUseCase):
             crew_identifier=update_run_command.crew_identifier,
             running_user_identifiers=update_run_command.running_user_identifiers,
         )
+
         async with self.db_context.begin_transaction(read_only=False):
             await self.save_run_output.save_run(run)
 

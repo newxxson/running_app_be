@@ -1,7 +1,11 @@
+from os import path
 from fastapi import BackgroundTasks
 from injector import inject
 from running_app.common.database.db_context import DBContext
 
+from running_app.path.domain.exception.path_not_found_exception import (
+    PathNotFoundException,
+)
 from running_app.running.run.domain.exception.run_not_found_exception import (
     RunNotFoundException,
 )
@@ -16,6 +20,9 @@ from running_app.running.running_state.application.port.output.find_current_run_
 )
 from running_app.running.running_state.application.port.output.find_path_coordinate_output import (
     RunningStateFindPathCoordinateOutput,
+)
+from running_app.running.running_state.application.port.output.find_run_output import (
+    RunningStateFindRunOutput,
 )
 from running_app.running.running_state.application.port.output.save_current_run_output import (
     SaveCurrentRunOutput,
@@ -37,12 +44,14 @@ class RunningStateService(CreateRunningStatusUseCase):
         self,
         db_context: DBContext,
         find_current_run_output: FindCurrentRunOutput,
+        find_run_output: RunningStateFindRunOutput,
         find_path_coordinate_output: RunningStateFindPathCoordinateOutput,
         save_current_run_output: SaveCurrentRunOutput,
         save_running_state_output: SaveRunningStateOutput,
     ) -> None:
         self.db_context = db_context
         self.find_current_run_output = find_current_run_output
+        self.find_run_output = find_run_output
         self.find_path_coordinate_output = find_path_coordinate_output
         self.save_current_run_output = save_current_run_output
         self.save_running_state_output = save_running_state_output
@@ -59,7 +68,42 @@ class RunningStateService(CreateRunningStatusUseCase):
             )
         )
         if not ongoing_run:
-            raise RunNotFoundException(command.run_identifier)
+            # 첫 런닝 상태를 생성합니다.
+            async with self.db_context.begin_transaction(read_only=True):
+                run = await self.find_run_output.find_run_by_run_id(
+                    run_identifier=command.run_identifier
+                )
+                if not run:
+                    raise RunNotFoundException(run_identifier=command.run_identifier)
+
+                max_sequence = await self.find_path_coordinate_output.count_path_coordinates_by_path_id(
+                    path_identifier=run.path_identifier
+                )
+
+                current_target_coordinate = await self.find_path_coordinate_output.find_path_coordinate_by_path_id_and_sequence(
+                    path_identifier=run.path_identifier, sequence=1
+                )
+
+                if not path:
+                    raise PathNotFoundException(path_identifier=run.path_identifier)
+
+            ongoing_run = CurrentRun(
+                run_identifier=command.run_identifier,
+                runner_identifier=command.runner_identifier,
+                path_identifier=run.path_identifier,
+                latitude=command.latitude,
+                longitude=command.longitude,
+                speed=0,
+                time=command.time,
+                current_sequence=0,
+                max_sequence=max_sequence,
+                current_target_coordinate_latitude=current_target_coordinate.latitude
+                if current_target_coordinate
+                else None,
+                current_target_coordinate_longitude=current_target_coordinate.longitude
+                if current_target_coordinate
+                else None,
+            )
 
         new_running_state = RunningStateFactory.create_running_state(
             current_run=ongoing_run,

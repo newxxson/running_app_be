@@ -3,7 +3,10 @@ from injector import Binder, Injector
 from running_app.common.cache.cache import CacheManager
 from running_app.common.cache.redis import RedisManager
 from running_app.common.database.db_context import DBContext
-from running_app.common.database.sa_context import AsyncSQLAlchemyContext
+from running_app.common.database.sa_context import (
+    AsyncSQLAlchemy,
+    AsyncSQLAlchemyContext,
+)
 from running_app.path.adapter.output.persistence.path_persistence_adapter import (
     PathPersistenceAdapter,
 )
@@ -108,6 +111,7 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(FindRunOutput, to=RunPersistenceAdapter, scope=singleton)
 
     binder.bind(CacheManager, to=RedisManager, scope=singleton)
+    binder.bind(AsyncSQLAlchemy, to=AsyncSQLAlchemy, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])
