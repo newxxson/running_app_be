@@ -5,6 +5,9 @@ import msgspec
 class CreatePathCommand(msgspec.Struct):
     """경로 생성 명령어입니다."""
 
+    title: str
+    description: str | None
+
     name: str
     total_distance: float
 

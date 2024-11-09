@@ -8,6 +8,9 @@ class Path(msgspec.Struct):
 
     identifier: UUID
 
+    title: str
+    description: str | None
+
     name: str
 
     total_distance: float

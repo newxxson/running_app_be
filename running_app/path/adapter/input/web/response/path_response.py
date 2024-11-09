@@ -18,6 +18,9 @@ class PathInfoResponse(BaseModel):
 
     identifier: UUID
 
+    title: str
+    description: str | None
+
     name: str
 
     total_distance: float
@@ -32,6 +35,8 @@ class PathInfoResponse(BaseModel):
     def from_domain(cls, path: Path) -> "PathInfoResponse":
         return cls(
             identifier=path.identifier,
+            title=path.title,
+            description=path.description,
             name=path.name,
             total_distance=path.total_distance,
             estimated_required_minute=path.estimated_required_minute,

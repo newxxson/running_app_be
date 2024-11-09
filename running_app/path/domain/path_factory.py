@@ -1,4 +1,5 @@
 import datetime
+from turtle import title
 from uuid import uuid4
 from running_app.path.application.input.command.create_path_command import (
     CreatePathCommand,
@@ -16,6 +17,8 @@ class PathFactory:
     def create_path(create_path_command: CreatePathCommand):
         return Path(
             identifier=uuid4(),
+            title=create_path_command.title,
+            description=create_path_command.description,
             name=create_path_command.name,
             total_distance=create_path_command.total_distance,
             estimated_required_minute=create_path_command.total_distance

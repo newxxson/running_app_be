@@ -1,4 +1,5 @@
 import datetime
+from doctest import debug_script
 from typing import Self
 from uuid import UUID
 
@@ -15,6 +16,9 @@ class PathEntity(Base):
     __tablename__ = "path"
 
     identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
+
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str | None] = mapped_column(String, nullable=True)
 
     name: Mapped[str] = mapped_column(String, nullable=False)
 
@@ -37,6 +41,8 @@ class PathEntity(Base):
         """도메인 객체를 엔티티 객체로 변환합니다."""
         return cls(
             identifier=path.identifier,
+            title=path.title,
+            description=path.description,
             name=path.name,
             total_distance=path.total_distance,
             estimated_required_minute=path.estimated_required_minute,
@@ -49,6 +55,8 @@ class PathEntity(Base):
         """엔티티 객체를 도메인 객체로 변환합니다."""
         return Path(
             identifier=self.identifier,
+            title=self.title,
+            description=self.description,
             name=self.name,
             total_distance=self.total_distance,
             estimated_required_minute=self.estimated_required_minute,
