@@ -17,7 +17,9 @@ class KakaoApiRequest(GetUserInfoOutput):
             "Authorization": f"Bearer {kakao_token}",
             "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
         }
-
+        logger.info(
+            "Requesting user info from kakao API, token_header: %s", token_header
+        )
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 kakao_property.kakao_api_url, headers=token_header
