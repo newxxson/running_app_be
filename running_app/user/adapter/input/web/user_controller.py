@@ -23,8 +23,7 @@ user_router = APIRouter()
 @user_router.post("/users")
 async def create_user(
     create_user_usecase: Annotated[CreateUserUseCase, Depends(on(CreateUserUseCase))],
-    create_user_request: CreateUserRequest = Depends(),
-    profile_image: UploadFile = File(None),
+    create_user_request: CreateUserRequest,
 ) -> UserResponse:
     """Create user."""
     user = await create_user_usecase.create_user(
