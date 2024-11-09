@@ -8,6 +8,6 @@ from running_app.crew.domain.crew_invite import CrewInvite
 class InviteUseCase(abc.ABC):
     
     @abc.abstractmethod
-    async def invite(self, *, command: InviteCommand) -> CrewInvite:
+    async def invite(self,  command: InviteCommand) -> CrewInvite:
         """Invite."""
     

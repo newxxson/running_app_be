@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from running_app.crew.domain.enum.role import CrewRole
 from injector import inject
-from sqlalchemy import select
+from sqlalchemy import select, update
 from running_app.common.database.db_context import DBContext
 from running_app.crew.domain.crew import Crew
 from running_app.crew.domain.crew_invite import CrewInvite
@@ -96,9 +96,9 @@ class CrewRepository:
 
     async def find_by_id(self, identifier: UUID) -> Crew | None:
         """Find crew by id."""
-        statement = select(CrewEntity).where(CrewEntity.identifier == identifier)
+        stmt = select(CrewEntity).where(CrewEntity.identifier == identifier)
 
-        result = await self.db_context.session.execute(statement)
+        result = await self.db_context.session.execute(stmt)
 
         crew_entity = result.scalars().first()
 
@@ -112,3 +112,18 @@ class CrewRepository:
         await self.db_context.session.flush()
 
         return invite_entity.to_domain()
+    
+    async def find_invite_by_id(self, identifier: UUID) -> CrewInvite | None:
+        stmt = select(CrewInviteEntity).where(CrewInviteEntity.request_identifier == identifier)
+
+        result = await self.db_context.session.execute(stmt)
+
+        invite_entity = result.scalars().first()
+
+        return invite_entity.to_domain() if invite_entity else None
+
+    async def update_member(self, crew_identifier: UUID, user_identifier: UUID) -> None:
+        """Update crew member."""
+        stmt = update(CrewMemberEntity).where(CrewMemberEntity.crew_identifier == crew_identifier, CrewMemberEntity.user_identifier == user_identifier)
+
+        await self.db_context.session.execute(stmt)

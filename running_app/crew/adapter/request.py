@@ -15,3 +15,6 @@ class InviteUserRequest(BaseModel):
             current_user_id=self.current_user_id,
         )
     
+
+class InviteUserReq(BaseModel):
+    user_identifier: UUID
