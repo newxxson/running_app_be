@@ -16,6 +16,8 @@ class RedisManager(CacheManager):
                 host=redis_property.redis_service_host,
                 port=redis_property.redis_service_port,
                 db=redis_property.redis_service_db,
+                username=redis_property.redis_username,
+                password=redis_property.redis_service_password,
             )
             self._redis = redis.Redis(connection_pool=self._connection_pool, ssl=True)
         except Exception:
