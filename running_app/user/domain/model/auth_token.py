@@ -1,4 +1,3 @@
-import msgspec
 from pydantic import BaseModel
 
 

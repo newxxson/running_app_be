@@ -11,7 +11,6 @@ from typing import Sequence, Union
 from alembic import op
 from geoalchemy2 import Geography
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
 from running_app.running.run.adapter.output.persistence.entity.run_entity import (
     UUIDListType,
