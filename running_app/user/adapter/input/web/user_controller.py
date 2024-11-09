@@ -6,10 +6,13 @@ from running_app.common.di import on
 from running_app.user.adapter.input.web.request.create_user_request import (
     CreateUserRequest,
 )
+from running_app.user.adapter.input.web.request.login_request import LoginRequest
 from running_app.user.adapter.input.web.response.user_response import UserResponse
 from running_app.user.application.port.input.create_user_usecase import (
     CreateUserUseCase,
 )
+from running_app.user.application.port.input.login_user_usecase import LoginUserUseCase
+from running_app.user.domain.model.auth_token import AuthPayload
 
 
 user_router = APIRouter()
@@ -28,8 +31,11 @@ async def create_user(
     return UserResponse.from_domain(user)
 
 
-# @user_router.get("/users/{user_identifier}")
-# async def get_user(
-#     user_identifier: UUID,
-
-# )
+@user_router.post("users/login")
+async def login(
+    login_request: LoginRequest, login_user_usecase: LoginUserUseCase
+) -> AuthPayload:
+    """Login user."""
+    return await login_user_usecase.login_user(
+        kakao_token=login_request.kakao_auth_token
+    )

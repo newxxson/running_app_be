@@ -10,6 +10,7 @@ from running_app.user.adapter.output.web.kakao_request import KakaoApiRequest
 from running_app.user.application.port.input.create_user_usecase import (
     CreateUserUseCase,
 )
+from running_app.user.application.port.input.login_user_usecase import LoginUserUseCase
 from running_app.user.application.port.input.query_user_usecase import QueryUserUseCase
 from running_app.user.application.port.output.find_user_output import FindUserOutput
 from running_app.user.application.port.output.get_user_info_output import (
@@ -29,6 +30,7 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(SaveUserOutput, to=UserPersistenceAdapter, scope=singleton)
     binder.bind(CreateUserUseCase, to=UserService, scope=singleton)
     binder.bind(QueryUserUseCase, to=UserService, scope=singleton)
+    binder.bind(LoginUserUseCase, to=UserService, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])
