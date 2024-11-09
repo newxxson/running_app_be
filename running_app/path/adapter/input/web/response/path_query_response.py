@@ -2,7 +2,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from running_app.path.adapter.input.web.request.register_coordinate_request import (
-    CoordinateModel,
+    CoordinateDto,
 )
 
 
@@ -11,4 +11,4 @@ class PathQueryResponse(BaseModel):
 
     path_identifier: UUID
 
-    coordinates: list[CoordinateModel]
+    coordinates: list[CoordinateDto]

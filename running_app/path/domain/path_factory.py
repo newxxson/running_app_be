@@ -3,7 +3,7 @@ from uuid import uuid4
 from running_app.path.application.input.command.create_path_command import (
     CreatePathCommand,
 )
-from running_app.path.application.input.command.register_corrdinate_command import (
+from running_app.path.application.input.command.register_coordinate_command import (
     RegisterCoordinateCommand,
 )
 from running_app.path.domain.coordinate import Coordinate
@@ -19,7 +19,8 @@ class PathFactory:
             name=create_path_command.name,
             total_distance=create_path_command.total_distance,
             estimated_required_minute=create_path_command.total_distance
-            / path_property.average_speed,
+            / path_property.average_speed
+            * 60,
             creator_identifier=create_path_command.creator_identifier,
             created_date=datetime.datetime.now(tz=datetime.UTC),
             last_modified_date=datetime.datetime.now(tz=datetime.UTC),

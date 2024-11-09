@@ -12,7 +12,8 @@ if not profile or profile not in setting_profiles:
 class BaseProperty(BaseSettings):
     """PROFILE 값에 따라 다른 파일을 통해 각 property들이 상속받는 기본 Property 형식입니다."""
 
-    model_config = SettingsConfigDict(env_file=(".env/.env", f".env/.env-{profile}"), extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(".env/.env", f".env/.env-{profile}"), extra="ignore"
+    )
 
     profile: str
-    

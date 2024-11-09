@@ -8,7 +8,7 @@ from running_app.path.adapter.input.web.request.create_path_request import (
     CreatePathRequest,
 )
 from running_app.path.adapter.input.web.request.register_coordinate_request import (
-    CoordinateModel,
+    CoordinateDto,
     RegisterCoordinateRequest,
 )
 from running_app.path.adapter.input.web.response.path_query_response import (
@@ -85,7 +85,7 @@ async def get_path(
     return PathQueryResponse(
         path_identifier=path_info.path_identifier,
         coordinates=[
-            CoordinateModel(
+            CoordinateDto(
                 latitude=coordinate.latitude,
                 longitude=coordinate.longitude,
                 sequence=coordinate.sequence,

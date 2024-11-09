@@ -1,7 +1,8 @@
 import msgspec
+from pydantic import BaseModel
 
 
-class AuthPayload(msgspec.Struct):
+class AuthPayload(BaseModel):
     """인증 페이로드입니다."""
 
     refresh_token: str

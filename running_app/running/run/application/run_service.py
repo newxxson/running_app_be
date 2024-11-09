@@ -1,4 +1,3 @@
-from sys import path_hooks
 from injector import inject
 from running_app.common.database.db_context import DBContext
 from running_app.path.domain.exception.path_not_found_exception import (

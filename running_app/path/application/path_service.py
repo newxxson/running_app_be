@@ -4,7 +4,7 @@ from running_app.common.database.db_context import DBContext
 from running_app.path.application.input.command.create_path_command import (
     CreatePathCommand,
 )
-from running_app.path.application.input.command.register_corrdinate_command import (
+from running_app.path.application.input.command.register_coordinate_command import (
     RegisterCoordinateCommand,
 )
 from running_app.path.application.input.query.query_path_command import SearchPathQuery

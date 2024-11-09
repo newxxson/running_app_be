@@ -35,7 +35,8 @@ async def create_user(
 
 @user_router.post("users/login")
 async def login(
-    login_request: LoginRequest, login_user_usecase: LoginUserUseCase
+    login_request: LoginRequest,
+    login_user_usecase: Annotated[LoginUserUseCase, Depends(on(LoginUserUseCase))],
 ) -> AuthPayload:
     """Login user."""
     return await login_user_usecase.login_user(

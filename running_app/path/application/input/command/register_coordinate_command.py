@@ -1,9 +1,7 @@
 from uuid import UUID
 import msgspec
 
-from running_app.path.adapter.input.web.request.register_coordinate_request import (
-    CoordinateModel,
-)
+from running_app.path.domain.model.coordinate_model import CoordinateModel
 
 
 class RegisterCoordinateCommand(msgspec.Struct):

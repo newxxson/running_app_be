@@ -9,7 +9,7 @@ class _AuthProperty(BaseProperty):
     access_token_expiration_minutes: int
     refresh_token_expiration_days: int
 
-    algorithm: str
+    jwt_algorithm: str
 
 
 auth_property = _AuthProperty()  # type: ignore

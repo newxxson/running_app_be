@@ -1,6 +1,6 @@
 import abc
 
-from running_app.path.application.input.command.register_corrdinate_command import (
+from running_app.path.application.input.command.register_coordinate_command import (
     RegisterCoordinateCommand,
 )
 

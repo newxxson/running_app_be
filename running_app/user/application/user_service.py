@@ -89,7 +89,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase):
                 ),
             },
             key=auth_property.jwt_secret_key,
-            algorithm=auth_property.algorithm,
+            algorithm=auth_property.jwt_algorithm,
         )
 
         refresh_token = jwt.encode(
@@ -99,7 +99,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase):
                 + datetime.timedelta(days=auth_property.refresh_token_expiration_days),
             },
             key=auth_property.jwt_secret_key,
-            algorithm=auth_property.algorithm,
+            algorithm=auth_property.jwt_algorithm,
         )
 
         return AuthPayload(
