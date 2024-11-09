@@ -3,6 +3,16 @@ from jinja2 import ModuleLoader
 
 from running_app.common.database.db_context import DBContext
 from running_app.common.database.sa_context import AsyncSQLAlchemyContext
+from running_app.path.application.input.usecase.create_path_usecase import (
+    CreatePathUseCase,
+)
+from running_app.path.application.input.usecase.query_path_usecase import (
+    QueryPathUseCase,
+)
+from running_app.path.application.input.usecase.register_coordinate_usecase import (
+    RegisterCoordinateUseCase,
+)
+from running_app.path.application.path_service import PathService
 from running_app.user.adapter.output.persistence.user_persistence_adapter import (
     UserPersistenceAdapter,
 )
@@ -32,6 +42,11 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(QueryUserUseCase, to=UserService, scope=singleton)
     binder.bind(LoginUserUseCase, to=UserService, scope=singleton)
     binder.bind(GetUserInfoOutput, to=KakaoApiRequest, scope=singleton)
+
+    # path
+    binder.bind(CreatePathUseCase, to=PathService, scope=singleton)
+    binder.bind(QueryPathUseCase, to=PathService, scope=singleton)
+    binder.bind(RegisterCoordinateUseCase, to=PathService, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])
