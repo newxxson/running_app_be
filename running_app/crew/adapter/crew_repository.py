@@ -11,6 +11,10 @@ from running_app.crew.domain.crew import Crew
 from typing import Self
 from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.crew.domain.crew_member import CrewMember
+from running_app.user.adapter.output.persistence.entity.user_entity import UserEntity
+from running_app.crew.domain.crew_member import CrewMemberResponse
+
+
 
 class CrewEntity(Base):
     """Crew entity."""
@@ -135,3 +139,35 @@ class CrewRepository:
         member_entity = result.scalars().first()
 
         return member_entity.to_domain() if member_entity else None
+    
+
+    async def find_by_user_id(self, user_identifier: UUID) -> UUID | None:
+        stmt = select(CrewMemberEntity).where(CrewMemberEntity.user_identifier == user_identifier)
+
+        result = await self.db_context.session.execute(stmt)
+
+        crew_member_entity = result.scalars().first()
+
+        return crew_member_entity.crew_identifier if crew_member_entity else None
+    
+
+    async def find_members_by_crew_id(self, crew_identifier: UUID) -> list[CrewMemberResponse]:
+        stmt = (
+            select(
+                UserEntity.identifier,
+                UserEntity.nickname,
+                UserEntity.gender
+            )
+            .join(CrewMemberEntity, CrewMemberEntity.user_identifier == UserEntity.identifier)
+            .where(CrewMemberEntity.crew_identifier == crew_identifier)
+        )
+
+        result = await self.db_context.session.execute(stmt)
+        
+        return [
+            CrewMemberResponse(
+                identifier=row.identifier,
+                nickname=row.nickname,
+                gender=row.gender
+            ) for row in result.all()
+        ]

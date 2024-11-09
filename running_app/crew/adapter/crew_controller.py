@@ -9,7 +9,9 @@ from running_app.crew.application.invite_command import InviteCommand
 from running_app.crew.application.invite_usecase import InviteUseCase
 from running_app.crew.application.accept_invite_command import AcceptInviteCommand
 from running_app.crew.application.accept_invite_usecase import AcceptInviteUseCase
-
+from running_app.crew.application.get_crew_members_usecase import GetCrewMembersUseCase
+from running_app.crew.application.get_crew_members_command import GetCrewMembersCommand
+from response import CrewMembersResponse
 from running_app.common.di import on
 
 
@@ -55,3 +57,15 @@ async def accept_invite(
     crew_invite = await accept_invite_usecase.accept_invite(command)
     return CrewInviteResponse.from_domain(crew_invite)
 
+
+@crew_router.get("/crews/{crew_identifier/members")
+async def get_crew_members(
+    get_crew_members_usecase: Annotated[GetCrewMembersUseCase, Depends(on(GetCrewMembersUseCase))],
+    current_user_id: UUID = Depends(get_current_user),
+) -> CrewMembersResponse:
+    
+    command = GetCrewMembersCommand(
+        current_user_id=current_user_id
+    )
+    crew_members = await get_crew_members_usecase.get_crew_members(command)
+    return CrewMembersResponse.from_domain(crew_members)

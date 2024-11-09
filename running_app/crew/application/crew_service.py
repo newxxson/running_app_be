@@ -8,16 +8,20 @@ from running_app.crew.application.accept_invite_usecase import AcceptInviteUseCa
 from running_app.crew.application.invite_usecase import InviteUseCase
 from running_app.crew.application.invite_command import InviteCommand
 from running_app.crew.application.accept_invite_command import AcceptInviteCommand
+from running_app.crew.application.get_crew_members_usecase import GetCrewMembersUseCase
+from running_app.crew.application.get_crew_members_command import GetCrewMembersCommand
+
 from running_app.crew.domain.crew_member import CrewMember
 from running_app.crew.domain.enum.role import CrewRole
 from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.crew.domain.exception.crew_not_found_exception import CrewNotFoundException
 from running_app.crew.domain.exception.crew_member_not_found_exception import CrewMemberNotFoundException
-from adapter.response import CrewInviteResponse
+from running_app.crew.adapter.response import CrewInviteResponse, CrewMembersResponse
+
 from running_app.common.database.db_context import DBContext
 
 import uuid
-class CrewService(InviteUseCase, AcceptInviteUseCase):
+class CrewService(InviteUseCase, AcceptInviteUseCase, GetCrewMembersUseCase):
     """Crew service."""
 
     @inject
@@ -60,7 +64,8 @@ class CrewService(InviteUseCase, AcceptInviteUseCase):
             is_deleted=False
         )
         
-        await self.crew_repository.create_member(crew_member)
+        async with self.db_context.begin_transaction(read_only=False):
+            await self.crew_repository.create_member(crew_member)
         return CrewInviteResponse.from_domain(crew_member)
         
 
@@ -68,8 +73,8 @@ class CrewService(InviteUseCase, AcceptInviteUseCase):
         self, command: AcceptInviteCommand
     ) -> Response:
         """크루 초대를 수락하는 서비스 함수입니다."""
-
-        member = await self.crew_repository.find_member_by_id(command.member_identifier) # member_identifier로 멤버 조회
+        async with self.db_context.begin_transaction(read_only=False):
+            member = await self.crew_repository.find_member_by_id(command.member_identifier) # member_identifier로 멤버 조회
 
         if not member:
             raise ValueError("Crew member not found")
@@ -78,9 +83,26 @@ class CrewService(InviteUseCase, AcceptInviteUseCase):
             raise ValueError("User does not match invite")
         
         member.member_status = CrewMemberStatus.ACTIVE
-
-        await self.crew_repository.update_member(member.crew_identifier, member.user_identifier) # 크루 멤버 업데이트
+        
+        async with self.db_context.begin_transaction(read_only=False):
+            await self.crew_repository.update_member(member.crew_identifier, member.user_identifier) # 크루 멤버 업데이트
         
         return Response(status_code=status.HTTP_200_OK)
 
+    async def get_crew_members(
+        self, command: GetCrewMembersCommand
+    ) -> CrewMembersResponse:
+        """크루 멤버들을 조회하는 서비스 함수입니다."""
+        async with self.db_context.begin_transaction(read_only=True):
+            crew_identifier = await self.crew_repository.find_by_user_id(command.current_user_id)
 
+        if not crew_identifier:
+            raise CrewNotFoundException()
+        
+        async with self.db_context.begin_transaction(read_only=True):
+            members = await self.crew_repository.find_members_by_crew_id(crew_identifier)
+
+        return CrewMembersResponse.from_domain(members)
+    
+    # current_user_id로 크루 조회
+    # join으로 User 같이 해서 CrewMemberResponse로 반환
