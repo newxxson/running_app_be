@@ -1,16 +1,19 @@
-
-
-
 import asyncio
 import contextlib
 from contextvars import ContextVar
 import json
 from typing import Any, AsyncIterator
 from injector import inject
-from sqlalchemy.ext.asyncio import create_async_engine, async_scoped_session, async_sessionmaker, AsyncSession
-from boiler_plate.common.database.db_context import DBContext
-from boiler_plate.common.exception.business_exception import BusinessException
-from boiler_plate.common.log import logger
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    async_scoped_session,
+    async_sessionmaker,
+    AsyncSession,
+)
+
+from running_app.common.database.db_context import DBContext
+from running_app.common.exception.business_exception import BusinessException
+from running_app.common.log import logger
 
 NOTSET = "NOTSET"
 READ = "READ"
@@ -30,8 +33,12 @@ class AsyncSQLAlchemy:
         self.read_engine = create_async_engine(read_url, **options)
         self.master_engine = create_async_engine(master_url, **options)
 
-        self.read_session_factory = async_sessionmaker(bind=self.read_engine, expire_on_commit=False)
-        self.master_session_factory = async_sessionmaker(bind=self.master_engine, expire_on_commit=False)
+        self.read_session_factory = async_sessionmaker(
+            bind=self.read_engine, expire_on_commit=False
+        )
+        self.master_session_factory = async_sessionmaker(
+            bind=self.master_engine, expire_on_commit=False
+        )
 
         self.read_scoped_session_factory = async_scoped_session(
             self.read_session_factory,
@@ -60,7 +67,9 @@ class AsyncSQLAlchemyContext(DBContext):
 
     @inject
     def __init__(self, async_sa: AsyncSQLAlchemy) -> None:
-        self.read_only = ContextVar("read_only", default=NOTSET)  # 트랜잭션별 session context
+        self.read_only = ContextVar(
+            "read_only", default=NOTSET
+        )  # 트랜잭션별 session context
         self.async_sa = async_sa
 
     @contextlib.asynccontextmanager
@@ -96,7 +105,9 @@ class AsyncSQLAlchemyContext(DBContext):
     def session(self) -> AsyncSession:
         """Context에 따른 session을 리턴합니다."""
         if self.read_only.get() == NOTSET:
-            raise BusinessException(status_code=500, message="Session not executed within transaction")
+            raise BusinessException(
+                status_code=500, message="Session not executed within transaction"
+            )
 
         if self.read_only.get() == READ:
             return self.async_sa.read_scoped_session_factory()
