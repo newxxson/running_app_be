@@ -8,5 +8,5 @@ class SaveCoordinateOutput(abc.ABC):
     """Save coordinate output interface."""
 
     @abc.abstractmethod
-    async def save_all(self, coordinates: list[Coordinate]) -> None:
+    async def save_all_coordinates(self, coordinates: list[Coordinate]) -> None:
         """Save all coordinates."""

@@ -74,7 +74,9 @@ async def get_path(
     limit: int = 1000,
 ) -> PathQueryResponse:
     """경로를 조회합니다."""
-    path_info = await query_path_usecase.query_path(
+    limit = min(1000, limit)
+
+    path_info = await query_path_usecase.query_path_coordinates(
         query=SearchPathQuery(
             path_identifier=path_identifier,
             cursor_sequence=cursor_sequence,

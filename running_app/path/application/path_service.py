@@ -1,3 +1,4 @@
+from uuid import UUID
 from injector import inject
 from running_app.common.database.db_context import DBContext
 from running_app.path.application.input.command.create_path_command import (
@@ -6,6 +7,7 @@ from running_app.path.application.input.command.create_path_command import (
 from running_app.path.application.input.command.register_corrdinate_command import (
     RegisterCoordinateCommand,
 )
+from running_app.path.application.input.query import query_path_command
 from running_app.path.application.input.query.query_path_command import SearchPathQuery
 from running_app.path.application.input.usecase.create_path_usecase import (
     CreatePathUseCase,
@@ -16,6 +18,7 @@ from running_app.path.application.input.usecase.query_path_usecase import (
 from running_app.path.application.input.usecase.register_coordinate_usecase import (
     RegisterCoordinateUseCase,
 )
+from running_app.path.application.output import query_path_output
 from running_app.path.application.output.query_path_output import QueryPathOutput
 from running_app.path.application.output.save_coordinate_output import (
     SaveCoordinateOutput,
@@ -50,7 +53,9 @@ class PathService(CreatePathUseCase, RegisterCoordinateUseCase, QueryPathUseCase
             register_coordinate_command=register_coordinate_command
         )
         async with self.db_context.begin_transaction(read_only=False):
-            await self.save_coordinate_output.save_all(coordinates=coordinates)
+            await self.save_coordinate_output.save_all_coordinates(
+                coordinates=coordinates
+            )
 
     async def create_path(self, create_path_command: CreatePathCommand) -> Path:
         """Create path."""
@@ -61,10 +66,20 @@ class PathService(CreatePathUseCase, RegisterCoordinateUseCase, QueryPathUseCase
 
         return path
 
-    async def query_path(self, query: SearchPathQuery) -> PathInfoModel:
+    async def query_path_coordinates(self, query: SearchPathQuery) -> PathInfoModel:
         """경로에 대해서 조회합니다."""
         async with self.db_context.begin_transaction(read_only=True):
-            return await self.query_path_output.query_path(
+            coordinates = await self.query_path_output.query_path_coordinates(
                 path_identifier=query.path_identifier,
                 cursor_sequence=query.cursor_sequence,
+                limit=query.limit,
             )
+
+            return PathInfoModel(
+                path_identifier=query.path_identifier, coordinates=coordinates
+            )
+
+    async def query_path(self, cursor: UUID | None, limit: int) -> list[Path]:
+        """경로에 대해서 조회합니다."""
+        async with self.db_context.begin_transaction(read_only=True):
+            return await self.query_path_output.query_path(cursor=cursor, limit=limit)
