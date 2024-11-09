@@ -31,4 +31,7 @@ hypothesis = "^6.110.1"
 python-dateutil = "^2.9.0.post0"
 shapely = "^2.0.5"
 gunicorn = "^23.0.0"
+pyjwt = "^2.9.0"
+crypto = "^1.4.1"
+python-multipart = "^0.0.17"
 
