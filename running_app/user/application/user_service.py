@@ -84,7 +84,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase, QueryUserUseCase):
         if not user:
             raise UserNotFoundException()
 
-        user_claim = {"user_identifier": user.identifier}
+        user_claim = {"user_identifier": str(user.identifier)}
 
         access_token = jwt.encode(
             payload={
