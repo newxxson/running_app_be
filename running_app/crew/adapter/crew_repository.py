@@ -169,3 +169,17 @@ class CrewRepository:
             )
             for row in result.all()
         ]
+
+    async def find_crew_member_by_user_id_and_status(
+        self, user_identifier: UUID, status: CrewMemberStatus
+    ) -> list[CrewMember]:
+        stmt = select(CrewMemberEntity).where(
+            CrewMemberEntity.user_identifier == user_identifier,
+            CrewMemberEntity.member_status == status.value,
+        )
+
+        result = await self.db_context.session.execute(stmt)
+
+        crew_members = result.scalars().all()
+
+        return [member.to_domain() for member in crew_members]

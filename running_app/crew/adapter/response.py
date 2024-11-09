@@ -1,6 +1,8 @@
+from enum import member
 from pydantic import BaseModel
 from uuid import UUID
 from datetime import datetime
+from running_app.crew.domain.crew_member import CrewMember
 from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.user.domain.enum.gender import Gender
 
@@ -58,3 +60,21 @@ class CrewResponse(BaseModel):
 
     identifier: UUID
     crew_name: str
+
+
+class InvitationResponse(BaseModel):
+    """초대 정보를 나타내는 도메인 오브젝트입니다."""
+
+    member_identifier: UUID
+    crew_identifier: UUID
+    invitee_identifier: UUID
+    invited_at: datetime
+
+    @classmethod
+    def from_domain(cls, crew_member: CrewMember) -> "InvitationResponse":
+        return cls(
+            member_identifier=crew_member.identifier,
+            crew_identifier=crew_member.crew_identifier,
+            invitee_identifier=crew_member.user_identifier,
+            invited_at=crew_member.joined_at,
+        )
