@@ -3,5 +3,5 @@ from dataclasses import dataclass
 
 @dataclass
 class AcceptInviteCommand:
-    request_identifier: UUID
+    member_identifier: UUID
     user_identifier: UUID 

@@ -13,4 +13,4 @@ class CrewMember(msgspec.Struct):
     joined_at: datetime
     role: CrewRole
     is_deleted: bool = False
-    status: Status = Status.ACTIVE
+    member_status: Status = Status.ACTIVE

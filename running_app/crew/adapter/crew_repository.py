@@ -1,7 +1,7 @@
 from uuid import UUID
 from sqlalchemy import String, Uuid, ForeignKey, DateTime, Boolean
 from running_app.common.database.base_model import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 from running_app.crew.domain.enum.role import CrewRole
 from injector import inject
@@ -21,7 +21,6 @@ class CrewEntity(Base):
     identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
     crew_name: Mapped[str] = mapped_column(String, nullable=False)
 
-    members = relationship("CrewMemberEntity", back_populates="crew")
 
     @classmethod
     def of(cls, crew: Crew) -> Self:
@@ -36,7 +35,6 @@ class CrewEntity(Base):
         return Crew(
             identifier=self.identifier,
             crew_name=self.crew_name,
-            members=self.members,
         )
 
 class CrewMemberEntity(Base):
@@ -44,14 +42,14 @@ class CrewMemberEntity(Base):
 
     __tablename__ = "crew_member"
 
-    user_identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
+    identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
+    user_identifier: Mapped[UUID] = mapped_column(ForeignKey("user.identifier"))
     crew_identifier: Mapped[UUID] = mapped_column(ForeignKey("crew.identifier"))
-    joined_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     role: Mapped[CrewRole] = mapped_column(String, nullable=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    status: Mapped[Status] = mapped_column(String, nullable=False)
-    
-    crew = relationship("CrewEntity", back_populates="members")
+    member_status: Mapped[Status] = mapped_column(String, nullable=False)
+
 
     @classmethod
     def of(cls, member: CrewMember) -> Self:
@@ -61,7 +59,7 @@ class CrewMemberEntity(Base):
             crew_identifier=member.crew_identifier,
             joined_at=member.joined_at,
             role=member.role,
-            status=member.status,
+            member_status=member.member_status,
             is_deleted=member.is_deleted,
         )
 
@@ -72,7 +70,7 @@ class CrewMemberEntity(Base):
             crew_identifier=self.crew_identifier,
             joined_at=self.joined_at,
             role=self.role,
-            status=self.status,
+            member_status=self.member_status,
             is_deleted=self.is_deleted,
         )
 
@@ -140,14 +138,14 @@ class CrewRepository:
         return
     
 
-    async def find_invite_by_id(self, identifier: UUID) -> CrewInvite | None:
-        stmt = select(CrewInviteEntity).where(CrewInviteEntity.request_identifier == identifier)
+    async def find_member_by_id(self, identifier: UUID) -> CrewMember | None:
+        stmt = select(CrewMemberEntity).where(CrewMemberEntity.identifier == identifier)
 
         result = await self.db_context.session.execute(stmt)
 
-        invite_entity = result.scalars().first()
+        member_entity = result.scalars().first()
 
-        return invite_entity.to_domain() if invite_entity else None
+        return member_entity.to_domain() if member_entity else None
 
 
     async def update_member(self, crew_identifier: UUID, user_identifier: UUID) -> None:
@@ -155,3 +153,19 @@ class CrewRepository:
         stmt = update(CrewMemberEntity).where(CrewMemberEntity.crew_identifier == crew_identifier, CrewMemberEntity.user_identifier == user_identifier)
 
         await self.db_context.session.execute(stmt)
+
+    
+    async def find_member_by_user_id_and_crew_id(self, user_identifier: UUID, crew_identifier: UUID) -> CrewMember | None:
+        stmt = (
+            select(CrewMemberEntity) 
+            .where(
+                CrewMemberEntity.user_identifier == user_identifier, 
+                CrewMemberEntity.crew_identifier == crew_identifier
+            )
+        )
+
+        result = await self.db_context.session.execute(stmt)
+
+        member_entity = result.scalars().first()
+
+        return member_entity.to_domain() if member_entity else None
