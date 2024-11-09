@@ -21,7 +21,7 @@ class UserPersistenceAdapter(FindUserOutput, SaveUserOutput):
 
     async def find_user_by_kakao_id(self, kakao_id: str) -> User | None:
         """Find user by kakao id."""
-        statement = select(UserEntity).where(UserEntity.kakao_id == kakao_id)
+        statement = select(UserEntity).where(UserEntity.kakao_id == str(kakao_id))
 
         result = await self.db_context.session.execute(statement)
 
