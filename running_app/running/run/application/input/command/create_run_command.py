@@ -17,4 +17,4 @@ class CreateRunCommand(msgspec.Struct):
 
     running_user_identifiers: list[UUID]
 
-    path_identifier: UUID
+    path_identifier: UUID | None

@@ -59,7 +59,7 @@ class RunningStateService(CreateRunningStatusUseCase):
     async def snapshot_running_state(
         self, background_tasks: BackgroundTasks, command: SnapshotRunningStateCommand
     ) -> CurrentRun:
-        """Create running status. And return current left percentage, and current target path coordinate"""
+        """Create running status. And return current left  percentage, and current target path coordinate"""
         # 캐시로부터 현재 진행중인 러닝을 찾습니다.
         ongoing_run = (
             await self.find_current_run_output.find_current_run_by_run_id_and_user_id(
@@ -76,16 +76,21 @@ class RunningStateService(CreateRunningStatusUseCase):
                 if not run:
                     raise RunNotFoundException(run_identifier=command.run_identifier)
 
-                max_sequence = await self.find_path_coordinate_output.count_path_coordinates_by_path_id(
-                    path_identifier=run.path_identifier
+                max_sequence = (
+                    await self.find_path_coordinate_output.count_path_coordinates_by_path_id(
+                        path_identifier=run.path_identifier
+                    )
+                    if run.path_identifier
+                    else 0
                 )
 
-                current_target_coordinate = await self.find_path_coordinate_output.find_path_coordinate_by_path_id_and_sequence(
-                    path_identifier=run.path_identifier, sequence=1
+                current_target_coordinate = (
+                    await self.find_path_coordinate_output.find_path_coordinate_by_path_id_and_sequence(
+                        path_identifier=run.path_identifier, sequence=1
+                    )
+                    if run.path_identifier
+                    else None
                 )
-
-                if not path:
-                    raise PathNotFoundException(path_identifier=run.path_identifier)
 
             ongoing_run = CurrentRun(
                 run_identifier=command.run_identifier,

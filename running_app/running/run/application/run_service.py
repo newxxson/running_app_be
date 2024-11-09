@@ -70,12 +70,12 @@ class RunService(CreateRunUseCase, UpdateRunUseCase):
     async def create_run(self, create_run_command: CreateRunCommand) -> Run:
         """Create run."""
         async with self.db_context.begin_transaction(read_only=True):
-            path = await self.find_path_output.find_path_by_id(
-                path_identifier=create_run_command.path_identifier
-            )
-        if not path:
-            raise PathNotFoundException(
-                path_identifier=create_run_command.path_identifier
+            path = (
+                await self.find_path_output.find_path_by_id(
+                    path_identifier=create_run_command.path_identifier
+                )
+                if create_run_command.path_identifier
+                else None
             )
 
         run = RunFactory.create_run(create_run_command=create_run_command, path=path)

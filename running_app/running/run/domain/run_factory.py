@@ -11,7 +11,7 @@ class RunFactory:
     """Run factory."""
 
     @staticmethod
-    def create_run(create_run_command: CreateRunCommand, path: Path) -> Run:
+    def create_run(create_run_command: CreateRunCommand, path: Path | None) -> Run:
         """Create run."""
         return Run(
             identifier=uuid.uuid4(),
@@ -21,7 +21,7 @@ class RunFactory:
             user_identifier=create_run_command.user_identifier,
             crew_identifier=create_run_command.crew_identifier,
             running_user_identifiers=create_run_command.running_user_identifiers,
-            path_identifier=path.identifier,
-            total_distance=path.total_distance,
+            path_identifier=path.identifier if path else None,
+            total_distance=path.total_distance if path else None,
             created_date=datetime.datetime.now(tz=datetime.UTC),
         )

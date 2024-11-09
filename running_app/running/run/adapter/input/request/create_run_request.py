@@ -17,7 +17,7 @@ class CreateRunRequest(BaseModel):
 
     running_user_identifiers: list[UUID]
 
-    path_identifier: UUID
+    path_identifier: UUID | None = None
 
     def to_command(self, request_user_identifier: UUID):
         return CreateRunCommand(

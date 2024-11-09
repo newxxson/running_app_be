@@ -62,10 +62,10 @@ class RunEntity(Base):
         UUIDListType, nullable=False
     )
 
-    total_distance: Mapped[float] = mapped_column(Float, nullable=False)
+    total_distance: Mapped[float | None] = mapped_column(Float, nullable=True)
 
-    path_identifier: Mapped[UUID] = mapped_column(
-        ForeignKey("path.identifier"), nullable=False
+    path_identifier: Mapped[UUID | None] = mapped_column(
+        ForeignKey("path.identifier"), nullable=True
     )
 
     created_date: Mapped[datetime.datetime] = mapped_column(

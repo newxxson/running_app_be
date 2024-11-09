@@ -20,9 +20,9 @@ class Run(msgspec.Struct):
 
     running_user_identifiers: list[UUID]
 
-    total_distance: float
+    total_distance: float | None
 
-    path_identifier: UUID
+    path_identifier: UUID | None
 
     created_date: datetime.datetime
 
