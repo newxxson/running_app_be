@@ -18,7 +18,9 @@ class CurrentRunningStateResponse(BaseModel):
     def from_domain(cls, current_run: CurrentRun) -> Self:
         return cls(
             speed=current_run.speed,
-            percentage=current_run.current_sequence / current_run.max_sequence,
+            percentage=current_run.current_sequence / current_run.max_sequence
+            if current_run.max_sequence > 0
+            else 0,
             target_coordinate_latitude=current_run.current_target_coordinate_latitude,
             target_coordinate_longitude=current_run.current_target_coordinate_longitude,
         )
