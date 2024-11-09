@@ -4,6 +4,9 @@ from typing import Annotated, AsyncIterator
 from fastapi.concurrency import run_in_threadpool
 from running_app.common.cache.cache import CacheManager
 from running_app.common.database.sa_context import AsyncSQLAlchemy
+from running_app.common.middlware.exception_handler_middleware import (
+    ExceptionHandlerMiddleware,
+)
 from running_app.user.adapter.input.web.user_controller import user_router
 from running_app.path.adapter.input.web.path_controller import path_router
 from running_app.running.run.adapter.input.web.run_controller import run_router
@@ -73,3 +76,5 @@ async def test_redis(
 
 
 app.include_router(main_router)
+
+app.add_middleware(ExceptionHandlerMiddleware)
