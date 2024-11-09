@@ -13,6 +13,8 @@ from running_app.running.running_state.adapter.input.web.running_state_controlle
 )
 from fastapi.middleware.cors import CORSMiddleware
 from running_app.common.log import logger
+from running_app.crew.adapter.crew_controller import crew_router
+
 from fastapi import FastAPI
 from running_app.common.di import injector
 
@@ -55,3 +57,5 @@ app.add_middleware(
     allow_methods=["*"],  # HTTP methods allowed (GET, POST, etc.)
     allow_headers=["*"],  # Headers allowed in requests
 )
+
+app.include_router(crew_router)
