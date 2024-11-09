@@ -42,7 +42,7 @@ class UserEntity(Base):
             identifier=self.identifier,
             kakao_id=self.kakao_id,
             nickname=self.nickname,
-            gender=self.gender,
+            gender=Gender(self.gender),
             profile_image_url=self.profile_image_url,
             phone=self.phone,
         )

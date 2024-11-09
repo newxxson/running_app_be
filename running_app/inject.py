@@ -74,7 +74,7 @@ from injector import singleton
 
 
 def service_configure(binder: Binder) -> None:  # noqa: PLR0915
-    binder.bind(DBContext, to=AsyncSQLAlchemyContext)
+    binder.bind(DBContext, to=AsyncSQLAlchemyContext, scope=singleton)
 
     # user
     binder.bind(GetUserInfoOutput, to=KakaoApiRequest, scope=singleton)

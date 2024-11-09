@@ -1,4 +1,5 @@
 # Define a user model
+from uuid import UUID
 from fastapi import HTTPException, Header
 import jwt
 from pydantic import BaseModel
@@ -24,11 +25,11 @@ async def get_current_user(authorization: str | None = Header(None)):
             auth_property.jwt_secret_key,
             algorithms=[auth_property.jwt_algorithm],
         )
-        user_identifier: str | None = payload.get("sub")
-        if user_identifier is None:
+        claims: dict | None = payload.get("claims")
+        if claims is None or claims.get("user_identifier") is None:
             raise HTTPException(
                 status_code=401, detail="User identifier missing in token"
             )
-        return {"user_identifier": user_identifier}
+        return UUID(claims["user_identifier"])
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")

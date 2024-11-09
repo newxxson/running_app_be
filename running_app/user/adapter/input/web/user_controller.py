@@ -33,7 +33,7 @@ async def create_user(
     return UserResponse.from_domain(user)
 
 
-@user_router.post("users/login")
+@user_router.post("/users/login")
 async def login(
     login_request: LoginRequest,
     login_user_usecase: Annotated[LoginUserUseCase, Depends(on(LoginUserUseCase))],
@@ -44,7 +44,7 @@ async def login(
     )
 
 
-@user_router.get("users/{user_identifier}")
+@user_router.get("/users/{user_identifier}")
 async def get_user(
     query_user_usecase: Annotated[QueryUserUseCase, Depends(on(QueryUserUseCase))],
     user_identifier: UUID,
@@ -52,7 +52,9 @@ async def get_user(
 ) -> UserResponse:
     """Get user."""
     if user_identifier != current_user_identifier:
+        print("user_identifier", user_identifier, current_user_identifier)
         raise HTTPException(status_code=403, detail="Forbidden")
 
     user = await query_user_usecase.find_user_by_id(user_identifier=user_identifier)
+
     return UserResponse.from_domain(user)

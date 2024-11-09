@@ -1,6 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel
 
+from running_app.user.domain.user import User
 
 
 class UserResponse(BaseModel):
@@ -14,7 +15,7 @@ class UserResponse(BaseModel):
     profile_image: str | None
 
     @classmethod
-    def from_domain(cls, user):
+    def from_domain(cls, user: User) -> "UserResponse":
         return cls(
             identifier=user.identifier,
             nickname=user.nickname,

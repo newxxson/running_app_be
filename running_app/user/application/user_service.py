@@ -1,4 +1,5 @@
 import datetime
+import uuid
 from injector import inject
 import jwt
 from running_app.common.database.db_context import DBContext
@@ -9,6 +10,7 @@ from running_app.user.application.port.input.create_user_usecase import (
     CreateUserUseCase,
 )
 from running_app.user.application.port.input.login_user_usecase import LoginUserUseCase
+from running_app.user.application.port.input.query_user_usecase import QueryUserUseCase
 from running_app.user.application.port.output.find_user_output import FindUserOutput
 from running_app.user.application.port.output.get_user_info_output import (
     GetUserInfoOutput,
@@ -27,7 +29,7 @@ from running_app.user.domain.user import User
 from running_app.user.domain.user_factory import UserFactory
 
 
-class UserService(CreateUserUseCase, LoginUserUseCase):
+class UserService(CreateUserUseCase, LoginUserUseCase, QueryUserUseCase):
     """User service."""
 
     @inject
@@ -78,7 +80,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase):
         if not user:
             raise UserNotFoundException()
 
-        user_claim = {"identifier": user.identifier}
+        user_claim = {"user_identifier": user.identifier}
 
         access_token = jwt.encode(
             payload={
@@ -87,6 +89,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase):
                 + datetime.timedelta(
                     minutes=auth_property.access_token_expiration_minutes
                 ),
+                "jti": uuid.uuid4(),
             },
             key=auth_property.jwt_secret_key,
             algorithm=auth_property.jwt_algorithm,
@@ -97,6 +100,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase):
                 "claims": user_claim,
                 "exp": datetime.datetime.now(tz=datetime.UTC)
                 + datetime.timedelta(days=auth_property.refresh_token_expiration_days),
+                "jti": uuid.uuid4(),
             },
             key=auth_property.jwt_secret_key,
             algorithm=auth_property.jwt_algorithm,
@@ -106,3 +110,14 @@ class UserService(CreateUserUseCase, LoginUserUseCase):
             access_token=access_token,
             refresh_token=refresh_token,
         )
+
+    async def find_user_by_id(self, *, user_identifier: uuid.UUID) -> User:
+        """Find user by id."""
+        async with self.db_context.begin_transaction(read_only=True):
+            user = await self.find_user_output.find_user_by_id(
+                identifier=user_identifier
+            )
+        if not user:
+            raise UserNotFoundException()
+
+        return user

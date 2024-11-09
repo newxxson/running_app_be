@@ -1,4 +1,5 @@
 import abc
+from uuid import UUID
 
 from running_app.user.domain.user import User
 
@@ -9,3 +10,7 @@ class FindUserOutput(abc.ABC):
     @abc.abstractmethod
     async def find_user_by_kakao_id(self, kakao_id: str) -> User | None:
         """Find user by kakao id."""
+
+    @abc.abstractmethod
+    async def find_user_by_id(self, identifier: UUID) -> User | None:
+        """Find user by id."""
