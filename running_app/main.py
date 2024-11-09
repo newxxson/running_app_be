@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 from typing import Annotated, AsyncIterator
 
 from fastapi.concurrency import run_in_threadpool
-from fastapi.routing import APIRoute
 from running_app.common.cache.cache import CacheManager
 from running_app.common.database.sa_context import AsyncSQLAlchemy
 from running_app.user.adapter.input.web.user_controller import user_router

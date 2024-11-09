@@ -1,8 +1,5 @@
 from injector import inject
 from running_app.common.database.db_context import DBContext
-from running_app.path.domain.exception.path_not_found_exception import (
-    PathNotFoundException,
-)
 from running_app.running.run.application.input.command.create_run_command import (
     CreateRunCommand,
 )

@@ -1,11 +1,8 @@
-from os import path
+from uuid import UUID
 from fastapi import BackgroundTasks
 from injector import inject
 from running_app.common.database.db_context import DBContext
 
-from running_app.path.domain.exception.path_not_found_exception import (
-    PathNotFoundException,
-)
 from running_app.running.run.domain.exception.run_not_found_exception import (
     RunNotFoundException,
 )
@@ -14,6 +11,9 @@ from running_app.running.running_state.application.port.input.command.snapshot_r
 )
 from running_app.running.running_state.application.port.input.create_running_status_usecase import (
     CreateRunningStatusUseCase,
+)
+from running_app.running.running_state.application.port.input.query_running_status_usecase import (
+    QueryRunningStatusUseCase,
 )
 from running_app.running.running_state.application.port.output.find_current_run_output import (
     FindCurrentRunOutput,
@@ -24,6 +24,9 @@ from running_app.running.running_state.application.port.output.find_path_coordin
 from running_app.running.running_state.application.port.output.find_run_output import (
     RunningStateFindRunOutput,
 )
+from running_app.running.running_state.application.port.output.find_running_state_output import (
+    FindRunningStateOutput,
+)
 from running_app.running.running_state.application.port.output.save_current_run_output import (
     SaveCurrentRunOutput,
 )
@@ -31,12 +34,15 @@ from running_app.running.running_state.application.port.output.save_running_stat
     SaveRunningStateOutput,
 )
 from running_app.running.running_state.domain.model.current_run import CurrentRun
+from running_app.running.running_state.domain.model.running_statistics import (
+    RunningStatistics,
+)
 from running_app.running.running_state.domain.running_state_factory import (
     RunningStateFactory,
 )
 
 
-class RunningStateService(CreateRunningStatusUseCase):
+class RunningStateService(CreateRunningStatusUseCase, QueryRunningStatusUseCase):
     """Running state service."""
 
     @inject
@@ -48,6 +54,7 @@ class RunningStateService(CreateRunningStatusUseCase):
         find_path_coordinate_output: RunningStateFindPathCoordinateOutput,
         save_current_run_output: SaveCurrentRunOutput,
         save_running_state_output: SaveRunningStateOutput,
+        find_running_state_output: FindRunningStateOutput,
     ) -> None:
         self.db_context = db_context
         self.find_current_run_output = find_current_run_output
@@ -55,6 +62,7 @@ class RunningStateService(CreateRunningStatusUseCase):
         self.find_path_coordinate_output = find_path_coordinate_output
         self.save_current_run_output = save_current_run_output
         self.save_running_state_output = save_running_state_output
+        self.find_running_state_output = find_running_state_output
 
     async def snapshot_running_state(
         self, background_tasks: BackgroundTasks, command: SnapshotRunningStateCommand
@@ -150,3 +158,23 @@ class RunningStateService(CreateRunningStatusUseCase):
         )
 
         return ongoing_run
+
+    async def query_running_states(
+        self, running_identifier: UUID
+    ) -> list[RunningStatistics]:
+        """Query running status."""
+        async with self.db_context.begin_transaction(read_only=True):
+            states = await self.find_running_state_output.find_running_state_by_run_identifier(
+                run_identifier=running_identifier
+            )
+
+        return [
+            RunningStatistics(
+                run_identifier=state.run_identifier,
+                time=state.time,
+                latitude=state.latitude,
+                longitude=state.longitude,
+                speed=state.speed,
+            )
+            for state in states
+        ]

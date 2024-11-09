@@ -13,6 +13,12 @@ from running_app.running.running_state.adapter.input.web.response.current_runnin
 from running_app.running.running_state.application.port.input.create_running_status_usecase import (
     CreateRunningStatusUseCase,
 )
+from running_app.running.running_state.application.port.input.query_running_status_usecase import (
+    QueryRunningStatusUseCase,
+)
+from running_app.running.running_state.domain.model.running_statistics import (
+    RunningStatistics,
+)
 
 
 running_state_router = APIRouter()
@@ -38,3 +44,16 @@ async def snapshot_running_state(
     )
 
     return CurrentRunningStateResponse.from_domain(running_state)
+
+
+@running_state_router.get("/running/{run_identifier}/result")
+async def get_running_result(
+    run_identifier: UUID,
+    query_running_status_usecase: Annotated[
+        QueryRunningStatusUseCase, Depends(on(QueryRunningStatusUseCase))
+    ],
+) -> list[RunningStatistics]:
+    """현재 러닝의 결과를 조회합니다."""
+    return await query_running_status_usecase.query_running_states(
+        running_identifier=run_identifier
+    )

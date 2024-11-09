@@ -56,6 +56,9 @@ from running_app.running.running_state.adapter.output.persistence.running_state_
 from running_app.running.running_state.application.port.input.create_running_status_usecase import (
     CreateRunningStatusUseCase,
 )
+from running_app.running.running_state.application.port.input.query_running_status_usecase import (
+    QueryRunningStatusUseCase,
+)
 from running_app.running.running_state.application.port.output.find_current_run_output import (
     FindCurrentRunOutput,
 )
@@ -138,6 +141,8 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(QueryCrewUseCase, to=CrewService, scope=singleton)
 
     binder.bind(RunFindPathOutput, to=RunPathAdapter, scope=singleton)
+
+    binder.bind(QueryRunningStatusUseCase, to=RunningStateService, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])
