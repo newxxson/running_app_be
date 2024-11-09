@@ -8,9 +8,8 @@ from injector import inject
 from sqlalchemy import select, update
 from running_app.common.database.db_context import DBContext
 from running_app.crew.domain.crew import Crew
-from running_app.crew.domain.crew_invite import CrewInvite
 from typing import Self
-from running_app.crew.domain.enum.status import Status
+from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.crew.domain.crew_member import CrewMember
 
 class CrewEntity(Base):
@@ -48,7 +47,7 @@ class CrewMemberEntity(Base):
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     role: Mapped[CrewRole] = mapped_column(String, nullable=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    member_status: Mapped[Status] = mapped_column(String, nullable=False)
+    member_status: Mapped[CrewMemberStatus] = mapped_column(String, nullable=False)
 
 
     @classmethod
@@ -66,6 +65,7 @@ class CrewMemberEntity(Base):
     def to_domain(self) -> CrewMember:
         """Convert user entity to user domain object."""
         return CrewMember(
+            identifier=self.identifier,
             user_identifier=self.user_identifier,
             crew_identifier=self.crew_identifier,
             joined_at=self.joined_at,
@@ -75,40 +75,6 @@ class CrewMemberEntity(Base):
         )
 
 
-class CrewInviteEntity(Base):
-    """Crew invite entity."""
-
-    __tablename__ = "crew_invite"
-
-    request_identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
-    crew_identifier: Mapped[UUID] = mapped_column(ForeignKey("crew.identifier"))
-    invitee_identifier: Mapped[UUID] = mapped_column(ForeignKey("user.identifier"))
-    invited_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    status: Mapped[str] = mapped_column(String, nullable=False)
-    is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False)
-
-    @classmethod
-    def of(cls, invite: CrewInvite) -> Self:
-        """Create user entity from user domain object."""
-        return cls(
-            identifier=invite.identifier,
-            crew_identifier=invite.crew_identifier,
-            invitee_identifier=invite.invitee_identifier,
-            invited_at=invite.invited_at,
-            status=invite.status,
-            is_deleted=invite.is_deleted,
-        )
-
-    def to_domain(self) -> CrewInvite:
-        """Convert user entity to user domain object."""
-        return CrewInvite(
-            identifier=self.request_identifier,
-            crew_identifier=self.crew_identifier,
-            invitee_identifier=self.invitee_identifier,
-            invited_at=self.invited_at,
-            status=self.status,
-            is_deleted=self.is_deleted,
-        )
 
 class CrewRepository:
     """Crew repository.""" 

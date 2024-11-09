@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Response, status
 from uuid import UUID
-
+import uuid
 from running_app.common.auth.jwt_token_deserializer import get_current_user
 from request import InviteUserReq
 from response import CrewInviteResponse
@@ -29,7 +29,8 @@ async def invite_user(
     """크루에 사용자를 초대합니다."""
 
     command = InviteCommand(
-        invitee_identifier=request.invitee_identifier,
+        identifier=uuid.uuid4(),
+        user_identifier=request.invitee_identifier,
         crew_identifier=crew_identifier,
         current_user_id=current_user_id,
     )
