@@ -11,6 +11,7 @@ from running_app.running.run.adapter.input.web.run_controller import run_router
 from running_app.running.running_state.adapter.input.web.running_state_controller import (
     running_state_router,
 )
+from fastapi.middleware.cors import CORSMiddleware
 from running_app.common.log import logger
 from fastapi import FastAPI
 from running_app.common.di import injector
@@ -41,3 +42,16 @@ app.include_router(user_router)
 app.include_router(path_router)
 app.include_router(run_router)
 app.include_router(running_state_router)
+# Define allowed origins for CORS. Use ["*"] to allow all origins.
+origins = [
+    "http://localhost:3000",  # Example: frontend on a different port
+]
+
+# Add CORS middleware to the FastAPI app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Origins allowed to access the API
+    allow_credentials=True,  # Allows cookies to be sent with requests
+    allow_methods=["*"],  # HTTP methods allowed (GET, POST, etc.)
+    allow_headers=["*"],  # Headers allowed in requests
+)
