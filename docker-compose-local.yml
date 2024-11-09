@@ -5,8 +5,8 @@ services:
     command: postgres -c 'max_connections=3500'
     environment:
       POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: running_app
+      POSTGRES_PASSWORD: running_app!
     ports:
       - "5432:5432"
 

@@ -2,7 +2,16 @@ import datetime
 from uuid import UUID
 import uuid
 
-from sqlalchemy import JSON, DateTime, Float, ForeignKey, String, TypeDecorator, Uuid
+from sqlalchemy import (
+    JSON,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
+    String,
+    TypeDecorator,
+    Uuid,
+)
 from running_app.common.database.base_model import Base
 from sqlalchemy.orm import mapped_column, Mapped
 
@@ -30,6 +39,10 @@ class RunEntity(Base):
     """Run entity."""
 
     __tablename__ = "run"
+    __table_args__ = (
+        Index("run_user_identifier_idx", "user_identifier"),
+        Index("run_crew_identifier_idx", "crew_identifier"),
+    )
 
     identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
 

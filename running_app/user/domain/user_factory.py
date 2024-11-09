@@ -16,4 +16,5 @@ class UserFactory:
             nickname=create_user_command.nickname,
             gender=create_user_command.gender,
             profile_image_url=None,
+            phone=create_user_command.phone,
         )

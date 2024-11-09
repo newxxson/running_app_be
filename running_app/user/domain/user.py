@@ -10,6 +10,8 @@ class User(msgspec.Struct):
     identifier: UUID
     kakao_id: str
 
+    phone: str
+
     nickname: str
     gender: Gender
 

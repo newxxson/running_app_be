@@ -1,6 +1,6 @@
 from typing import Self
 from uuid import UUID
-from sqlalchemy import ForeignKey, Integer, Uuid
+from sqlalchemy import ForeignKey, Index, Integer, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 from geoalchemy2 import Geography
 from geoalchemy2.shape import from_shape
@@ -13,6 +13,9 @@ class CoordinateEntity(Base):
     """Coordinate entity."""
 
     __tablename__ = "coordinate"
+    __table_args__ = (
+        Index("coordinate_path_identifier_sequence_idx", "path_identifier", "sequence"),
+    )
 
     identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
 

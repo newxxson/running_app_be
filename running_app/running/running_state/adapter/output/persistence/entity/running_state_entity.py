@@ -6,7 +6,7 @@ from geoalchemy2.shape import from_shape
 from shapely import Point
 from running_app.common.database.base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import DateTime, Float, ForeignKey, Uuid
+from sqlalchemy import DateTime, Float, ForeignKey, Index, Uuid
 
 from running_app.running.running_state.domain.running_state import RunningState
 
@@ -15,6 +15,17 @@ class RunningStateEntity(Base):
     """RunningState entity."""
 
     __tablename__ = "running_state"
+    __table_args__ = (
+        Index(
+            "running_state_run_identifier_runner_identifier_idx",
+            "run_identifier",
+            "runner_identifier",
+        ),
+        Index(
+            "running_state_run_identifier_idx",
+            "run_identifier",
+        ),
+    )
 
     identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
 

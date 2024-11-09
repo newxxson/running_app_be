@@ -12,6 +12,8 @@ class CreateUserRequest(BaseModel):
 
     kakao_auth_token: str
 
+    phone: str
+
     gender: str
 
     nickname: str
@@ -22,4 +24,5 @@ class CreateUserRequest(BaseModel):
             nickname=self.nickname,
             gender=Gender(gender),
             profile_image_url=None,
+            phone=self.phone,
         )

@@ -12,3 +12,5 @@ class CreateUserCommand(msgspec.Struct):
     gender: Gender
 
     profile_image_url: str | None
+
+    phone: str
