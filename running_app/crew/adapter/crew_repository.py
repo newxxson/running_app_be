@@ -85,6 +85,14 @@ class CrewRepository:
     def __init__(self, db_context: DBContext) -> None:
         self.db_context = db_context
 
+    async def find_crews(self) -> list[Crew]:
+        """Find crews."""
+        stmt = select(CrewEntity)
+
+        result = await self.db_context.session.execute(stmt)
+
+        return [crew.to_domain() for crew in result.scalars().all()]
+
     async def find_by_id(self, identifier: UUID) -> Crew | None:
         """Find crew by id."""
         stmt = select(CrewEntity).where(CrewEntity.identifier == identifier)

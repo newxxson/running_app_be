@@ -9,7 +9,7 @@ from running_app.common.database.sa_context import (
 )
 from running_app.crew.application.create_crew_usecase import CreateCrewUseCase
 from running_app.crew.application.query_crew_members_usecase import (
-    QueryCrewMembersUseCase,
+    QueryCrewUseCase,
 )
 from running_app.path.adapter.output.persistence.path_persistence_adapter import (
     PathPersistenceAdapter,
@@ -129,7 +129,7 @@ def service_configure(binder: Binder) -> None:  # noqa: PLR0915
     binder.bind(GetCrewMembersUseCase, to=CrewService, scope=singleton)
     binder.bind(CrewRepository, to=CrewRepository, scope=singleton)
     binder.bind(CreateCrewUseCase, to=CrewService, scope=singleton)
-    binder.bind(QueryCrewMembersUseCase, to=CrewService, scope=singleton)
+    binder.bind(QueryCrewUseCase, to=CrewService, scope=singleton)
 
 
 injector = Injector(modules=[service_configure])

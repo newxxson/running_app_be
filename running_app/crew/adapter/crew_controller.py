@@ -2,6 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Response, status
 from uuid import UUID
 
+
 from running_app.common.auth.jwt_token_deserializer import get_current_user
 from running_app.crew.adapter.request import CreateCrewRequest, InviteUserReq
 from running_app.crew.adapter.response import (
@@ -18,7 +19,7 @@ from running_app.crew.application.get_crew_members_command import GetCrewMembers
 from running_app.crew.adapter.response import CrewMembersResponse
 from running_app.common.di import on
 from running_app.crew.application.query_crew_members_usecase import (
-    QueryCrewMembersUseCase,
+    QueryCrewUseCase,
 )
 from running_app.crew.domain.enum.status import CrewMemberStatus
 
@@ -92,7 +93,7 @@ async def create_crew(
 @crew_router.get("/crews/invitations")
 async def get_invitations(
     query_crew_members_usecase: Annotated[
-        QueryCrewMembersUseCase, Depends(on(QueryCrewMembersUseCase))
+        QueryCrewUseCase, Depends(on(QueryCrewUseCase))
     ],
     current_user_id: UUID = Depends(get_current_user),
 ) -> list[InvitationResponse]:
@@ -104,3 +105,15 @@ async def get_invitations(
         )
     )
     return [InvitationResponse.from_domain(crew_member) for crew_member in crew_members]
+
+
+@crew_router.get("/crews")
+async def get_crews(
+    query_crew_usecase: Annotated[QueryCrewUseCase, Depends(on(QueryCrewUseCase))],
+) -> list[CrewResponse]:
+    """Get crews."""
+    crews = await query_crew_usecase.find_crews()
+    return [
+        CrewResponse(identifier=crew.identifier, crew_name=crew.crew_name)
+        for crew in crews
+    ]

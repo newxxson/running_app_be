@@ -1,5 +1,4 @@
 import datetime
-from turtle import title
 from uuid import uuid4
 from running_app.path.application.input.command.create_path_command import (
     CreatePathCommand,

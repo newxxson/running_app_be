@@ -13,7 +13,7 @@ from running_app.crew.application.get_crew_members_usecase import GetCrewMembers
 from running_app.crew.application.get_crew_members_command import GetCrewMembersCommand
 
 from running_app.crew.application.query_crew_members_usecase import (
-    QueryCrewMembersUseCase,
+    QueryCrewUseCase,
 )
 from running_app.crew.domain.crew import Crew
 from running_app.crew.domain.crew_member import CrewMember
@@ -39,7 +39,7 @@ class CrewService(
     AcceptInviteUseCase,
     GetCrewMembersUseCase,
     CreateCrewUseCase,
-    QueryCrewMembersUseCase,
+    QueryCrewUseCase,
 ):
     """Crew service."""
 
@@ -138,6 +138,11 @@ class CrewService(
             return await self.crew_repository.find_crew_member_by_user_id_and_status(
                 user_identifier=user_identifier, status=status
             )
+
+    async def find_crews(self) -> list[Crew]:
+        """Find crews."""
+        async with self.db_context.begin_transaction(read_only=True):
+            return await self.crew_repository.find_crews()
 
     # current_user_id로 크루 조회
     # join으로 User 같이 해서 CrewMemberResponse로 반환
