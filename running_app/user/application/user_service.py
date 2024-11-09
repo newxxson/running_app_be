@@ -1,3 +1,4 @@
+from cgitb import lookup
 import datetime
 import uuid
 from injector import inject
@@ -6,6 +7,7 @@ from running_app.common.database.db_context import DBContext
 from running_app.user.application.port.input.command.create_user_command import (
     CreateUserCommand,
 )
+from running_app.common.log import logger
 from running_app.user.application.port.input.create_user_usecase import (
     CreateUserUseCase,
 )
@@ -69,6 +71,8 @@ class UserService(CreateUserUseCase, LoginUserUseCase, QueryUserUseCase):
 
     async def login_user(self, *, kakao_token: str) -> AuthPayload:
         """Login user."""
+        logger.info(f"Login user with kakao token: {kakao_token}")
+
         user_info = await self.get_user_info_output.get_user_info_by_kakao_token(
             kakao_token=kakao_token
         )

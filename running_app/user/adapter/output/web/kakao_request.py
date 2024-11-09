@@ -12,6 +12,7 @@ class KakaoApiRequest(GetUserInfoOutput):
 
     async def get_user_info_by_kakao_token(self, kakao_token: str) -> UserInfo:
         """Get user info by kakao token."""
+        logger.info(f"Get user info by kakao token: {kakao_token}")
         token_header = {"Authorization": f"Bearer {kakao_token}"}
 
         async with aiohttp.ClientSession() as session:
