@@ -2,9 +2,13 @@ import datetime
 from uuid import UUID
 
 from geoalchemy2 import Geography
+from geoalchemy2.shape import from_shape
+from shapely import Point
 from running_app.common.database.base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import DateTime, ForeignKey, Uuid
+from sqlalchemy import DateTime, Float, ForeignKey, Uuid
+
+from running_app.running.running_state.domain.running_state import RunningState
 
 
 class RunningStateEntity(Base):
@@ -29,3 +33,34 @@ class RunningStateEntity(Base):
     location = mapped_column(
         Geography(geometry_type="POINT", srid=4326), nullable=False
     )
+
+    speed: Mapped[float] = mapped_column(Float, nullable=False)
+
+    @classmethod
+    def from_domain(cls, running_state: RunningState) -> "RunningStateEntity":
+        location = (
+            from_shape(
+                Point(running_state.longitude, running_state.latitude), srid=4326
+            ),
+        )
+        return cls(
+            identifier=running_state.identifier,
+            run_identifier=running_state.run_identifier,
+            runner_identifier=running_state.runner_identifier,
+            time=running_state.time,
+            location=location,
+            speed=running_state.speed,
+        )
+
+    def to_domain(self) -> RunningState:
+        latitude = self.location.ST_Y()
+        longitude = self.location.ST_X()
+        return RunningState(
+            identifier=self.identifier,
+            run_identifier=self.run_identifier,
+            runner_identifier=self.runner_identifier,
+            time=self.time,
+            latitude=latitude,
+            longitude=longitude,
+            speed=self.speed,
+        )

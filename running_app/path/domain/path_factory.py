@@ -8,7 +8,7 @@ from running_app.path.application.input.command.register_corrdinate_command impo
 )
 from running_app.path.domain.coordinate import Coordinate
 from running_app.path.domain.path import Path
-from running_app.common.property.path_property import path_property
+from running_app.common.property.path import path_property
 
 
 class PathFactory:

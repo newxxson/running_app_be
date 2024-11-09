@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import (
 from running_app.common.database.db_context import DBContext
 from running_app.common.exception.business_exception import BusinessException
 from running_app.common.log import logger
+from running_app.common.property.database import database_property
 
 NOTSET = "NOTSET"
 READ = "READ"
@@ -28,8 +29,8 @@ class AsyncSQLAlchemy:
         options: dict[str, Any] = {"pool_pre_ping": True}
         options["json_serializer"] = lambda x: json.dumps(x, ensure_ascii=False)
 
-        read_url = ""
-        master_url = ""
+        read_url = f"postgresql+asyncpg://{database_property.db_read_username}:{database_property.db_read_password}@{database_property.db_read_host}:{database_property.db_read_port}/{database_property.db_read_name}"
+        master_url = f"postgresql+asyncpg://{database_property.db_username}:{database_property.db_password}@{database_property.db_host}:{database_property.db_port}/{database_property.db_name}"
         self.read_engine = create_async_engine(read_url, **options)
         self.master_engine = create_async_engine(master_url, **options)
 

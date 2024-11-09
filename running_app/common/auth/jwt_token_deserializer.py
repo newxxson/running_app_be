@@ -2,7 +2,7 @@
 from fastapi import HTTPException, Header
 import jwt
 from pydantic import BaseModel
-from running_app.common.property.auth_property import auth_property
+from running_app.common.property.auth import auth_property
 
 
 class TokenData(BaseModel):

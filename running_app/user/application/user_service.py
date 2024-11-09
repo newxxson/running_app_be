@@ -22,7 +22,7 @@ from running_app.user.domain.exception.user_not_found_exception import (
     UserNotFoundException,
 )
 from running_app.user.domain.model.auth_token import AuthPayload
-from running_app.common.property.auth_property import auth_property
+from running_app.common.property.auth import auth_property
 from running_app.user.domain.user import User
 from running_app.user.domain.user_factory import UserFactory
 

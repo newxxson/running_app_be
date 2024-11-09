@@ -1,5 +1,5 @@
 import aiohttp
-from running_app.common.property.kakao_property import kakao_property
+from running_app.common.property.kakao import kakao_property
 from running_app.user.application.port.output.get_user_info_output import (
     GetUserInfoOutput,
 )

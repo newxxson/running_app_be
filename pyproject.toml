@@ -34,4 +34,5 @@ gunicorn = "^23.0.0"
 pyjwt = "^2.9.0"
 crypto = "^1.4.1"
 python-multipart = "^0.0.17"
+redis = "^5.2.0"
 
