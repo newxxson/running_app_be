@@ -1,4 +1,3 @@
-from cgitb import lookup
 import datetime
 import uuid
 from injector import inject

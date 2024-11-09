@@ -3,7 +3,6 @@ from uuid import UUID
 from datetime import datetime
 from running_app.crew.domain.crew_member import CrewMember
 from running_app.crew.domain.enum.status import CrewMemberStatus
-from running_app.user.domain.enum.gender import Gender
 from running_app.user.domain.user import User
 
 

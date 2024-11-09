@@ -14,7 +14,10 @@ from running_app.path.adapter.input.web.request.register_coordinate_request impo
 from running_app.path.adapter.input.web.response.path_query_response import (
     PathQueryResponse,
 )
-from running_app.path.adapter.input.web.response.path_response import PathResponse
+from running_app.path.adapter.input.web.response.path_response import (
+    PathInfoResponse,
+    PathResponse,
+)
 from running_app.path.application.input.query.query_path_command import SearchPathQuery
 from running_app.path.application.input.usecase.create_path_usecase import (
     CreatePathUseCase,
@@ -93,3 +96,13 @@ async def get_path(
             for coordinate in path_info.coordinates
         ],
     )
+
+
+@path_router.get("/paths")
+async def get_paths(
+    query_path_usecase: Annotated[QueryPathUseCase, Depends(on(QueryPathUseCase))],
+) -> list[PathInfoResponse]:
+    """경로를 조회합니다."""
+    paths = await query_path_usecase.query_path(cursor=None, limit=1000)
+
+    return [PathInfoResponse.from_domain(path) for path in paths]

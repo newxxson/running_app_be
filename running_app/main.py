@@ -3,7 +3,6 @@ from typing import AsyncIterator
 
 from fastapi.concurrency import run_in_threadpool
 from running_app.common.cache.cache import CacheManager
-from running_app.common.database.db_context import DBContext
 from running_app.common.database.sa_context import AsyncSQLAlchemy
 from running_app.user.adapter.input.web.user_controller import user_router
 from running_app.path.adapter.input.web.path_controller import path_router

@@ -20,7 +20,6 @@ from running_app.running.run.application.output.find_path_output import (
 )
 from running_app.running.run.application.output.find_run_output import FindRunOutput
 from running_app.running.run.application.output.save_run_output import SaveRunOutput
-from running_app.running.run.domain.enum.running_status import RunningStatus
 from running_app.running.run.domain.exception.run_not_found_exception import (
     RunNotFoundException,
 )

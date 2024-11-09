@@ -3,7 +3,6 @@ import abc
 from uuid import UUID
 
 from running_app.path.domain.coordinate import Coordinate
-from running_app.path.domain.path import Path
 
 
 class RunningStateFindPathCoordinateOutput(abc.ABC):

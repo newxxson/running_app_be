@@ -6,7 +6,7 @@ from datetime import datetime
 from running_app.crew.adapter.response import CrewMemberResponse
 from running_app.crew.domain.enum.role import CrewRole
 from injector import inject
-from sqlalchemy import select, update
+from sqlalchemy import select
 from running_app.common.database.db_context import DBContext
 from running_app.crew.domain.crew import Crew
 from typing import Self

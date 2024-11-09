@@ -22,9 +22,6 @@ from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.crew.domain.exception.crew_not_found_exception import (
     CrewNotFoundException,
 )
-from running_app.crew.domain.exception.crew_member_not_found_exception import (
-    CrewMemberNotFoundException,
-)
 from running_app.crew.adapter.response import CrewInviteResponse, CrewMembersResponse
 
 from running_app.common.database.db_context import DBContext

@@ -4,7 +4,6 @@ from datetime import datetime
 
 from running_app.crew.domain.enum.role import CrewRole
 from running_app.crew.domain.enum.status import CrewMemberStatus
-from running_app.user.domain.enum.gender import Gender
 
 
 class CrewMember(msgspec.Struct):
