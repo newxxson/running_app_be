@@ -16,3 +16,7 @@ class QueryPathUseCase(abc.ABC):
     @abc.abstractmethod
     async def query_path(self, cursor: UUID | None, limit: int) -> list[Path]:
         """경로에 대해서 조회합니다."""
+
+    @abc.abstractmethod
+    async def query_path_by_id(self, path_id: UUID) -> Path | None:
+        """경로에 대해서 조회합니다."""
