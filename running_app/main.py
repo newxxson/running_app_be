@@ -2,10 +2,16 @@ from contextlib import asynccontextmanager
 from typing import Annotated, AsyncIterator
 
 from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import JSONResponse
 from running_app.common.cache.cache import CacheManager
 from running_app.common.database.sa_context import AsyncSQLAlchemy
+from running_app.common.exception.business_exception import BusinessException
 from running_app.common.middlware.exception_handler_middleware import (
     ExceptionHandlerMiddleware,
+)
+from running_app.common.util.json_serializer import (
+    convert_to_serializable,
+    is_json_serializable,
 )
 from running_app.user.adapter.input.web.user_controller import user_router
 from running_app.path.adapter.input.web.path_controller import path_router
@@ -17,7 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from running_app.common.log import logger
 from running_app.crew.adapter.crew_controller import crew_router
 
-from fastapi import APIRouter, Depends, FastAPI
+from fastapi import APIRouter, Depends, FastAPI, Request
 from running_app.common.di import injector, on
 
 
@@ -78,3 +84,29 @@ async def test_redis(
 app.include_router(main_router)
 
 app.add_middleware(ExceptionHandlerMiddleware)
+
+
+@app.exception_handler(BusinessException)
+async def global_business_exception_handler(
+    request: Request, exc: BusinessException
+) -> JSONResponse:
+    """Business Exception을 상속하는 모든 Custom Exception을 다루는 handler입니다."""
+    serializable_data = (
+        exc.data
+        if is_json_serializable(exc.data) and exc.data is not None
+        else convert_to_serializable(exc.data)
+    )
+
+    logger.warning(
+        f"Business exception detected: msg={exc.message}, status_code={exc.status_code}, exc={serializable_data}",
+        exc_info=exc,
+    )
+
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "status_code": exc.status_code,
+            "message": exc.message,
+            "data": serializable_data,
+        },
+    )

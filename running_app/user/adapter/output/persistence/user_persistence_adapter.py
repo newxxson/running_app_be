@@ -17,7 +17,7 @@ class UserPersistenceAdapter(FindUserOutput, SaveUserOutput):
 
     async def save_user(self, user: User) -> None:
         """Save user."""
-        await self.db_context.session.merge(user)
+        await self.db_context.session.merge(UserEntity.of(user))
 
     async def find_user_by_kakao_id(self, kakao_id: str) -> User | None:
         """Find user by kakao id."""
