@@ -1,3 +1,4 @@
+from multiprocessing import set_forkserver_preload
 from typing import Self
 from uuid import UUID
 from sqlalchemy import ForeignKey, Index, Integer, Uuid
@@ -39,16 +40,4 @@ class CoordinateEntity(Base):
             ),
             path_identifier=coordinate.path_identifier,
             sequence=coordinate.sequence,
-        )
-
-    def to_domain(self) -> Coordinate:
-        """Convert entity object to domain object."""
-        latitude = self.location.ST_Y()
-        longitude = self.location.ST_X()
-        return Coordinate(
-            identifier=self.identifier,
-            latitude=latitude,
-            longitude=longitude,
-            path_identifier=self.path_identifier,
-            sequence=self.sequence,
         )

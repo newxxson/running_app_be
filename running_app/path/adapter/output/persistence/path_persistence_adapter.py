@@ -1,6 +1,7 @@
 from uuid import UUID
+from geoalchemy2 import Geometry
 from injector import inject
-from sqlalchemy import select
+from sqlalchemy import cast, func, select
 from running_app.common.database.db_context import DBContext
 from running_app.path.adapter.output.persistence.entity.coordinate_entity import (
     CoordinateEntity,
@@ -13,6 +14,7 @@ from running_app.path.application.output.save_coordinate_output import (
 from running_app.path.application.output.save_path_output import SavePathOutput
 from running_app.path.domain.coordinate import Coordinate
 from running_app.path.domain.path import Path
+from geoalchemy2.functions import ST_X, ST_Y, ST_Transform
 
 
 class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutput):
@@ -36,9 +38,17 @@ class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutp
     async def query_path_coordinates(
         self, path_identifier: UUID, cursor_sequence: int, limit: int
     ) -> list[Coordinate]:
-        """Query path."""
+        """Query path coordinates with evaluated latitude and longitude."""
+
+        # Convert Geography to Geometry using ST_Transform
         statement = (
-            select(CoordinateEntity)
+            select(
+                CoordinateEntity.identifier,
+                func.ST_X(cast(CoordinateEntity.location, Geometry)).label("longitude"),
+                func.ST_Y(cast(CoordinateEntity.location, Geometry)).label("latitude"),
+                CoordinateEntity.path_identifier,
+                CoordinateEntity.sequence,
+            )
             .filter(
                 CoordinateEntity.path_identifier == path_identifier,
                 CoordinateEntity.sequence > cursor_sequence,
@@ -49,9 +59,18 @@ class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutp
 
         result = await self.db_context.session.execute(statement)
 
-        coordinates = result.scalars().all()
+        coordinates = [
+            Coordinate(
+                identifier=row.identifier,
+                latitude=row.latitude,
+                longitude=row.longitude,
+                path_identifier=row.path_identifier,
+                sequence=row.sequence,
+            )
+            for row in result.all()
+        ]
 
-        return [coordinate.to_domain() for coordinate in coordinates]
+        return coordinates
 
     async def query_path(self, cursor: UUID | None, limit: int) -> list[Path]:
         """Query path."""

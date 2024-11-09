@@ -62,16 +62,3 @@ class RunningStateEntity(Base):
             location=location,
             speed=running_state.speed,
         )
-
-    def to_domain(self) -> RunningState:
-        latitude = self.location.ST_Y()
-        longitude = self.location.ST_X()
-        return RunningState(
-            identifier=self.identifier,
-            run_identifier=self.run_identifier,
-            runner_identifier=self.runner_identifier,
-            time=self.time,
-            latitude=latitude,
-            longitude=longitude,
-            speed=self.speed,
-        )
