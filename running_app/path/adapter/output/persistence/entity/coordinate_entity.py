@@ -1,4 +1,3 @@
-from multiprocessing import set_forkserver_preload
 from typing import Self
 from uuid import UUID
 from sqlalchemy import ForeignKey, Index, Integer, Uuid

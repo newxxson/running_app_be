@@ -14,7 +14,6 @@ from running_app.path.application.output.save_coordinate_output import (
 from running_app.path.application.output.save_path_output import SavePathOutput
 from running_app.path.domain.coordinate import Coordinate
 from running_app.path.domain.path import Path
-from geoalchemy2.functions import ST_X, ST_Y, ST_Transform
 
 
 class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutput):

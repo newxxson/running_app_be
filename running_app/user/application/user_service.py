@@ -100,7 +100,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase, QueryUserUseCase):
                 "claims": user_claim,
                 "exp": datetime.datetime.now(tz=datetime.UTC)
                 + datetime.timedelta(days=auth_property.refresh_token_expiration_days),
-                "jti": uuid.uuid4(),
+                "jti": str(uuid.uuid4()),
             },
             key=auth_property.jwt_secret_key,
             algorithm=auth_property.jwt_algorithm,
