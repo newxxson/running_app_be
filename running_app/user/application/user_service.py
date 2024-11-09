@@ -93,7 +93,7 @@ class UserService(CreateUserUseCase, LoginUserUseCase, QueryUserUseCase):
                 + datetime.timedelta(
                     minutes=auth_property.access_token_expiration_minutes
                 ),
-                "jti": uuid.uuid4(),
+                "jti": str(uuid.uuid4()),
             },
             key=auth_property.jwt_secret_key,
             algorithm=auth_property.jwt_algorithm,
