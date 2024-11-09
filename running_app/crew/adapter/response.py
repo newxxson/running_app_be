@@ -4,12 +4,13 @@ from datetime import datetime
 from running_app.crew.domain.enum.status import CrewMemberStatus
 from running_app.user.domain.enum.gender import Gender
 
+
 class CrewInviteResponse(BaseModel):
     """크루 초대 요청을 나타내는 도메인 오브젝트입니다."""
-    
+
     invitee_identifier: UUID
-    user_identifier: UUID # 초대 받는 사람
-    crew_identifier: UUID # 초대 한 크루
+    user_identifier: UUID  # 초대 받는 사람
+    crew_identifier: UUID  # 초대 한 크루
     invited_at: datetime
     is_deleted: bool
     member_status: CrewMemberStatus = CrewMemberStatus.PENDING
@@ -24,6 +25,7 @@ class CrewInviteResponse(BaseModel):
             is_deleted=crew_invite.is_deleted,
             member_status=crew_invite.member_status,
         )
+
 
 class CrewMemberResponse(BaseModel):
     """크루 멤버 정보를 나타내는 도메인 오브젝트입니다."""
@@ -40,6 +42,7 @@ class CrewMemberResponse(BaseModel):
             gender=crew_member.gender,
         )
 
+
 class CrewMembersResponse(BaseModel):
     """크루 멤버들 정보를 리스트로 나타내는 도메인 오브젝트입니다."""
 
@@ -47,4 +50,13 @@ class CrewMembersResponse(BaseModel):
 
     @classmethod
     def from_domain(cls, crew_members):
-        return cls(members=[CrewMemberResponse.from_domain(member) for member in crew_members])
+        return cls(
+            members=[CrewMemberResponse.from_domain(member) for member in crew_members]
+        )
+
+
+class CrewResponse(BaseModel):
+    """크루 정보를 나타내는 도메인 오브젝트입니다."""
+
+    identifier: UUID
+    crew_name: str

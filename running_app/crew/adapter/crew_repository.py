@@ -15,7 +15,6 @@ from running_app.user.adapter.output.persistence.entity.user_entity import UserE
 from running_app.crew.domain.crew_member import CrewMemberResponse
 
 
-
 class CrewEntity(Base):
     """Crew entity."""
 
@@ -23,7 +22,6 @@ class CrewEntity(Base):
 
     identifier: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True)
     crew_name: Mapped[str] = mapped_column(String, nullable=False)
-
 
     @classmethod
     def of(cls, crew: Crew) -> Self:
@@ -40,6 +38,7 @@ class CrewEntity(Base):
             crew_name=self.crew_name,
         )
 
+
 class CrewMemberEntity(Base):
     """Crew member entity."""
 
@@ -52,7 +51,6 @@ class CrewMemberEntity(Base):
     role: Mapped[CrewRole] = mapped_column(String, nullable=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False)
     member_status: Mapped[CrewMemberStatus] = mapped_column(String, nullable=False)
-
 
     @classmethod
     def of(cls, member: CrewMember) -> Self:
@@ -79,9 +77,8 @@ class CrewMemberEntity(Base):
         )
 
 
-
 class CrewRepository:
-    """Crew repository.""" 
+    """Crew repository."""
 
     @inject
     def __init__(self, db_context: DBContext) -> None:
@@ -97,7 +94,6 @@ class CrewRepository:
 
         return crew_entity.to_domain() if crew_entity else None
 
-
     async def create_member(self, member: CrewMember) -> None:
         """Save member."""
         member_entity = CrewMemberEntity.of(member)
@@ -106,7 +102,13 @@ class CrewRepository:
         await self.db_context.session.flush()
 
         return
-    
+
+    async def create(self, crew: Crew) -> None:
+        """Save crew."""
+        crew_entity = CrewEntity.of(crew)
+        self.db_context.session.add(crew_entity)
+
+        await self.db_context.session.flush()
 
     async def find_member_by_id(self, identifier: UUID) -> CrewMember | None:
         stmt = select(CrewMemberEntity).where(CrewMemberEntity.identifier == identifier)
@@ -117,21 +119,21 @@ class CrewRepository:
 
         return member_entity.to_domain() if member_entity else None
 
-
     async def update_member(self, crew_identifier: UUID, user_identifier: UUID) -> None:
         """Update crew member."""
-        stmt = update(CrewMemberEntity).where(CrewMemberEntity.crew_identifier == crew_identifier, CrewMemberEntity.user_identifier == user_identifier)
+        stmt = update(CrewMemberEntity).where(
+            CrewMemberEntity.crew_identifier == crew_identifier,
+            CrewMemberEntity.user_identifier == user_identifier,
+        )
 
         await self.db_context.session.execute(stmt)
 
-    
-    async def find_member_by_user_id_and_crew_id(self, user_identifier: UUID, crew_identifier: UUID) -> CrewMember | None:
-        stmt = (
-            select(CrewMemberEntity) 
-            .where(
-                CrewMemberEntity.user_identifier == user_identifier, 
-                CrewMemberEntity.crew_identifier == crew_identifier
-            )
+    async def find_member_by_user_id_and_crew_id(
+        self, user_identifier: UUID, crew_identifier: UUID
+    ) -> CrewMember | None:
+        stmt = select(CrewMemberEntity).where(
+            CrewMemberEntity.user_identifier == user_identifier,
+            CrewMemberEntity.crew_identifier == crew_identifier,
         )
 
         result = await self.db_context.session.execute(stmt)
@@ -139,35 +141,35 @@ class CrewRepository:
         member_entity = result.scalars().first()
 
         return member_entity.to_domain() if member_entity else None
-    
 
     async def find_by_user_id(self, user_identifier: UUID) -> UUID | None:
-        stmt = select(CrewMemberEntity).where(CrewMemberEntity.user_identifier == user_identifier)
+        stmt = select(CrewMemberEntity).where(
+            CrewMemberEntity.user_identifier == user_identifier
+        )
 
         result = await self.db_context.session.execute(stmt)
 
         crew_member_entity = result.scalars().first()
 
         return crew_member_entity.crew_identifier if crew_member_entity else None
-    
 
-    async def find_members_by_crew_id(self, crew_identifier: UUID) -> list[CrewMemberResponse]:
+    async def find_members_by_crew_id(
+        self, crew_identifier: UUID
+    ) -> list[CrewMemberResponse]:
         stmt = (
-            select(
-                UserEntity.identifier,
-                UserEntity.nickname,
-                UserEntity.gender
+            select(UserEntity.identifier, UserEntity.nickname, UserEntity.gender)
+            .join(
+                CrewMemberEntity,
+                CrewMemberEntity.user_identifier == UserEntity.identifier,
             )
-            .join(CrewMemberEntity, CrewMemberEntity.user_identifier == UserEntity.identifier)
             .where(CrewMemberEntity.crew_identifier == crew_identifier)
         )
 
         result = await self.db_context.session.execute(stmt)
-        
+
         return [
             CrewMemberResponse(
-                identifier=row.identifier,
-                nickname=row.nickname,
-                gender=row.gender
-            ) for row in result.all()
+                identifier=row.identifier, nickname=row.nickname, gender=row.gender
+            )
+            for row in result.all()
         ]

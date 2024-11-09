@@ -8,6 +8,7 @@ class InviteUserRequest(BaseModel):
     invitee_identifier: UUID
     crew_identifier: UUID
     current_user_id: UUID
+
     def to_command(self) -> InviteCommand:
         return InviteCommand(
             identifier=uuid.uuid4(),
@@ -15,7 +16,13 @@ class InviteUserRequest(BaseModel):
             crew_identifier=self.crew_identifier,
             current_user_id=self.current_user_id,
         )
-    
+
+
+class CreateCrewRequest(BaseModel):
+    """Create crew request."""
+
+    crew_name: str
+
 
 class InviteUserReq(BaseModel):
     invitee_identifier: UUID
