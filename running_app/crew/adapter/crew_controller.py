@@ -13,10 +13,10 @@ from running_app.crew.application.accept_invite_usecase import AcceptInviteUseCa
 from running_app.common.di import on
 
 
-user_router = APIRouter()
+crew_router = APIRouter()
 
 
-@user_router.post(
+@crew_router.post(
     "/crews/{crew_identifier}/member", 
     status_code=status.HTTP_200_OK
 )
@@ -39,7 +39,7 @@ async def invite_user(
 
 
 
-@user_router.put("/crews/{crew_identifiers}/member/{member_identifier}")
+@crew_router.put("/crews/{crew_identifiers}/member/{member_identifier}")
 async def accept_invite(
     member_identifier: UUID,
     crew_identifier: UUID,
