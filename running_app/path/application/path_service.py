@@ -7,7 +7,6 @@ from running_app.path.application.input.command.create_path_command import (
 from running_app.path.application.input.command.register_corrdinate_command import (
     RegisterCoordinateCommand,
 )
-from running_app.path.application.input.query import query_path_command
 from running_app.path.application.input.query.query_path_command import SearchPathQuery
 from running_app.path.application.input.usecase.create_path_usecase import (
     CreatePathUseCase,
@@ -18,7 +17,6 @@ from running_app.path.application.input.usecase.query_path_usecase import (
 from running_app.path.application.input.usecase.register_coordinate_usecase import (
     RegisterCoordinateUseCase,
 )
-from running_app.path.application.output import query_path_output
 from running_app.path.application.output.query_path_output import QueryPathOutput
 from running_app.path.application.output.save_coordinate_output import (
     SaveCoordinateOutput,

@@ -2,7 +2,6 @@ import abc
 from uuid import UUID
 
 from running_app.path.domain.coordinate import Coordinate
-from running_app.path.domain.model.path_information_model import PathInfoModel
 from running_app.path.domain.path import Path
 
 

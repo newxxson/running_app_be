@@ -1,5 +1,5 @@
 # Define a user model
-from fastapi import Depends, HTTPException, Header
+from fastapi import HTTPException, Header
 import jwt
 from pydantic import BaseModel
 from running_app.common.property.auth_property import auth_property

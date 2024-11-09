@@ -1,7 +1,6 @@
 from uuid import UUID
 from pydantic import BaseModel
 
-from running_app.user.domain.enum.gender import Gender
 
 
 class UserResponse(BaseModel):

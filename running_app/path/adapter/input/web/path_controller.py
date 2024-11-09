@@ -15,9 +15,6 @@ from running_app.path.adapter.input.web.response.path_query_response import (
     PathQueryResponse,
 )
 from running_app.path.adapter.input.web.response.path_response import PathResponse
-from running_app.path.application.input.command.register_corrdinate_command import (
-    RegisterCoordinateCommand,
-)
 from running_app.path.application.input.query.query_path_command import SearchPathQuery
 from running_app.path.application.input.usecase.create_path_usecase import (
     CreatePathUseCase,

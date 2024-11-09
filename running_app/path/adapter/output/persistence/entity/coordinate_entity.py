@@ -2,7 +2,6 @@ from typing import Self
 from uuid import UUID
 from sqlalchemy import ForeignKey, Integer, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.ext.declarative import as_declarative
 from geoalchemy2 import Geography
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point

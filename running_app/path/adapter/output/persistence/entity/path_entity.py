@@ -1,5 +1,4 @@
 import datetime
-from time import timezone
 from typing import Self
 from uuid import UUID
 

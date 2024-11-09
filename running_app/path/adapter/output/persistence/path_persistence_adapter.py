@@ -12,7 +12,6 @@ from running_app.path.application.output.save_coordinate_output import (
 )
 from running_app.path.application.output.save_path_output import SavePathOutput
 from running_app.path.domain.coordinate import Coordinate
-from running_app.path.domain.model.path_information_model import PathInfoModel
 from running_app.path.domain.path import Path
 
 
@@ -32,7 +31,7 @@ class PathPersistenceAdapter(QueryPathOutput, SavePathOutput, SaveCoordinateOutp
 
     async def save_path(self, path: Path) -> None:
         """Save path."""
-        await self.db_context.session.merge(path)
+        await self.db_context.session.merge(PathEntity.from_domain(path))
 
     async def query_path_coordinates(
         self, path_identifier: UUID, cursor_sequence: int, limit: int

@@ -1,4 +1,3 @@
-from sys import setrecursionlimit
 from uuid import UUID
 from pydantic import BaseModel
 

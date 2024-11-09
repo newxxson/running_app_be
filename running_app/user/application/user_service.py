@@ -1,6 +1,4 @@
 import datetime
-from math import exp
-from os import read
 from injector import inject
 import jwt
 from running_app.common.database.db_context import DBContext
