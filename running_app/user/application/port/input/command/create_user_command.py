@@ -6,7 +6,7 @@ from running_app.user.domain.enum.gender import Gender
 class CreateUserCommand(msgspec.Struct):
     """유저 생성 커맨드입니다."""
 
-    kakao_id: str
+    kakao_auth_token: str
 
     nickname: str
     gender: Gender

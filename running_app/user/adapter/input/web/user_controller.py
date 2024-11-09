@@ -1,4 +1,5 @@
 from typing import Annotated
+from uuid import UUID
 from fastapi import APIRouter, Depends, File, Request, UploadFile
 
 from running_app.common.di import on
@@ -25,3 +26,10 @@ async def create_user(
         create_user_command=create_user_request.to_command()
     )
     return UserResponse.from_domain(user)
+
+
+# @user_router.get("/users/{user_identifier}")
+# async def get_user(
+#     user_identifier: UUID,
+
+# )

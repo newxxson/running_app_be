@@ -8,6 +8,7 @@ class User(msgspec.Struct):
     """런닝 유저 도메인 오브젝트입니다."""
 
     identifier: UUID
+    kakao_id: str
 
     nickname: str
     gender: Gender

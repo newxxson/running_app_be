@@ -10,7 +10,7 @@ from running_app.user.domain.enum.gender import Gender
 class CreateUserRequest(BaseModel):
     """사용자 생성 API 요청 모델"""
 
-    kakao_id: str
+    kakao_auth_token: str
 
     gender: str
 
@@ -18,7 +18,7 @@ class CreateUserRequest(BaseModel):
 
     def to_command(self) -> CreateUserCommand:
         return CreateUserCommand(
-            kakao_id=self.kakao_id,
+            kakao_auth_token=self.kakao_auth_token,
             nickname=self.nickname,
             gender=Gender(gender),
             profile_image_url=None,
