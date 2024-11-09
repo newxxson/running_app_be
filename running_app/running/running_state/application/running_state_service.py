@@ -1,5 +1,4 @@
 from uuid import UUID
-from running_app.common.log import logger
 from fastapi import BackgroundTasks
 from injector import inject
 from running_app.common.database.db_context import DBContext

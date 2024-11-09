@@ -1,4 +1,3 @@
-from html import entities
 from uuid import UUID
 from geoalchemy2 import Geometry
 from injector import inject

@@ -2,8 +2,6 @@ import datetime
 from uuid import UUID
 
 from geoalchemy2 import Geography, WKTElement
-from geoalchemy2.shape import from_shape
-from shapely import Point
 from running_app.common.database.base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import DateTime, Float, ForeignKey, Index, Uuid

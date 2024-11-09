@@ -10,9 +10,6 @@ from running_app.running.run.application.input.command.update_run_command import
 from running_app.running.run.application.input.usecase.create_run_usecase import (
     CreateRunUseCase,
 )
-from running_app.running.run.application.input.usecase.query_run_usecase import (
-    QueryRunUseCase,
-)
 from running_app.running.run.application.input.usecase.update_run_usecase import (
     UpdateRunUseCase,
 )
