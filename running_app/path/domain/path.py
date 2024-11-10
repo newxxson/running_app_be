@@ -11,8 +11,6 @@ class Path(msgspec.Struct):
     title: str
     description: str | None
 
-    name: str
-
     total_distance: float
     estimated_required_minute: float
 

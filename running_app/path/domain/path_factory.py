@@ -18,7 +18,6 @@ class PathFactory:
             identifier=uuid4(),
             title=create_path_command.title,
             description=create_path_command.description,
-            name=create_path_command.name,
             total_distance=create_path_command.total_distance,
             estimated_required_minute=create_path_command.total_distance
             / 1000

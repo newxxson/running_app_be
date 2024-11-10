@@ -19,8 +19,6 @@ class PathEntity(Base):
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(String, nullable=True)
 
-    name: Mapped[str] = mapped_column(String, nullable=False)
-
     total_distance: Mapped[float] = mapped_column(Float, nullable=False)
     estimated_required_minute: Mapped[float] = mapped_column(Float, nullable=False)
 
@@ -42,7 +40,6 @@ class PathEntity(Base):
             identifier=path.identifier,
             title=path.title,
             description=path.description,
-            name=path.name,
             total_distance=path.total_distance,
             estimated_required_minute=path.estimated_required_minute,
             creator_identifier=path.creator_identifier,
@@ -56,7 +53,6 @@ class PathEntity(Base):
             identifier=self.identifier,
             title=self.title,
             description=self.description,
-            name=self.name,
             total_distance=self.total_distance,
             estimated_required_minute=self.estimated_required_minute,
             creator_identifier=self.creator_identifier,

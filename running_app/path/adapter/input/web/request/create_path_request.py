@@ -12,15 +12,12 @@ class CreatePathRequest(BaseModel):
     title: str
     description: str | None = None
 
-    name: str
-
     total_distance: float
 
     def to_command(self, creator_identifier: UUID) -> CreatePathCommand:
         return CreatePathCommand(
             title=self.title,
             description=self.description,
-            name=self.name,
             total_distance=self.total_distance,
             creator_identifier=creator_identifier,
         )

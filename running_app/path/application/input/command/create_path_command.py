@@ -8,7 +8,6 @@ class CreatePathCommand(msgspec.Struct):
     title: str
     description: str | None
 
-    name: str
     total_distance: float
 
     creator_identifier: UUID
