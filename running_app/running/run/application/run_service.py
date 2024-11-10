@@ -10,6 +10,9 @@ from running_app.running.run.application.input.command.update_run_command import
 from running_app.running.run.application.input.usecase.create_run_usecase import (
     CreateRunUseCase,
 )
+from running_app.running.run.application.input.usecase.query_run_usecase import (
+    QueryRunUseCase,
+)
 from running_app.running.run.application.input.usecase.update_run_usecase import (
     UpdateRunUseCase,
 )
@@ -25,7 +28,7 @@ from running_app.running.run.domain.run import Run
 from running_app.running.run.domain.run_factory import RunFactory
 
 
-class RunService(CreateRunUseCase, UpdateRunUseCase):
+class RunService(CreateRunUseCase, UpdateRunUseCase, QueryRunUseCase):
     """Run service."""
 
     @inject
@@ -85,4 +88,5 @@ class RunService(CreateRunUseCase, UpdateRunUseCase):
 
     async def find_run_by_run_id(self, run_identifier: UUID) -> Run | None:
         """Find run by run id."""
-        return await self.find_run_output.find_run_by_id(run_identifier)
+        async with self.db_context.begin_transaction(read_only=True):
+            return await self.find_run_output.find_run_by_id(run_identifier)

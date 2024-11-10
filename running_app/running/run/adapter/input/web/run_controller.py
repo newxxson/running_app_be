@@ -1,6 +1,6 @@
 from typing import Annotated
 from uuid import UUID
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from running_app.common.auth.jwt_token_deserializer import get_current_user
 from running_app.common.di import on
@@ -15,6 +15,9 @@ from running_app.running.run.adapter.input.response.running_response import (
 )
 from running_app.running.run.application.input.usecase.create_run_usecase import (
     CreateRunUseCase,
+)
+from running_app.running.run.application.input.usecase.query_run_usecase import (
+    QueryRunUseCase,
 )
 from running_app.running.run.application.input.usecase.update_run_usecase import (
     UpdateRunUseCase,
@@ -52,5 +55,19 @@ async def update_run(
             request_user_identifier=request_user_identifier,
         ),
     )
+
+    return RunningResponse.from_domain(run=run)
+
+
+@run_router.get("/running/{run_identifier}")
+async def get_run(
+    run_identifier: UUID,
+    query_run_usecase: Annotated[QueryRunUseCase, Depends(on(QueryRunUseCase))],
+) -> RunningResponse:
+    """Get run."""
+    run = await query_run_usecase.find_run_by_run_id(run_identifier=run_identifier)
+
+    if not run:
+        raise HTTPException(status_code=404, detail="Run not found")
 
     return RunningResponse.from_domain(run=run)
