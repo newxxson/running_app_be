@@ -21,6 +21,7 @@ class PathFactory:
             name=create_path_command.name,
             total_distance=create_path_command.total_distance,
             estimated_required_minute=create_path_command.total_distance
+            / 1000
             / path_property.average_speed
             * 60,
             creator_identifier=create_path_command.creator_identifier,
