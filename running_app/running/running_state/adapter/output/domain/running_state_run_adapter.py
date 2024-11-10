@@ -5,17 +5,12 @@ from running_app.running.run.application.input.usecase.query_run_usecase import 
     QueryRunUseCase,
 )
 from running_app.running.run.domain.run import Run
-from running_app.running.running_state.application.port.output.find_path_coordinate_output import (
-    RunningStateFindPathCoordinateOutput,
-)
 from running_app.running.running_state.application.port.output.find_run_output import (
     RunningStateFindRunOutput,
 )
 
 
-class RunningStateRunAdapter(
-    RunningStateFindRunOutput, RunningStateFindPathCoordinateOutput
-):
+class RunningStateRunAdapter(RunningStateFindRunOutput):
     """Running state run adapter."""
 
     @inject
