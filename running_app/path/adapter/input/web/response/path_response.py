@@ -10,7 +10,7 @@ class PathResponse(BaseModel):
 
     identifier: UUID
 
-    name: str
+    title: str
 
 
 class PathInfoResponse(BaseModel):
@@ -20,8 +20,6 @@ class PathInfoResponse(BaseModel):
 
     title: str
     description: str | None
-
-    name: str
 
     total_distance: float
     estimated_required_minute: float
@@ -37,7 +35,6 @@ class PathInfoResponse(BaseModel):
             identifier=path.identifier,
             title=path.title,
             description=path.description,
-            name=path.name,
             total_distance=path.total_distance,
             estimated_required_minute=path.estimated_required_minute,
             creator_identifier=path.creator_identifier,

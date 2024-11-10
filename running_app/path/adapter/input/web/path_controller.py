@@ -46,7 +46,7 @@ async def create_path(
 
     return PathResponse(
         identifier=path.identifier,
-        name=path.name,
+        title=path.title,
     )
 
 
