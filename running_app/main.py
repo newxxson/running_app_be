@@ -54,7 +54,8 @@ app.include_router(run_router)
 app.include_router(running_state_router)
 # Define allowed origins for CORS. Use ["*"] to allow all origins.
 origins = [
-    "http://localhost:3000",  # Example: frontend on a different port
+    "http://localhost:3000",  # Example: frontend on a different port,
+    "https://inthon-frontend.vercel.app",
 ]
 
 # Add CORS middleware to the FastAPI app
